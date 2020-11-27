@@ -1,0 +1,25 @@
+Databronnen:
+- Woningvoorraad: data van 1995 - 2011 : https://opendata.cbs.nl/statline/portal.html?_la=nl&_catalog=CBS&tableId=37263&_theme=783
+	  			  data van 2012 - 2020 : https://opendata.cbs.nl/statline/portal.html?_la=nl&_catalog=CBS&tableId=81955NED&_theme=274
+- Woningprijzen:  data van 1995 - 2020 : https://opendata.cbs.nl/statline/portal.html?_la=nl&_catalog=CBS&tableId=83913NED&_theme=374
+
+
+Dataformats:
+- RegioS : 
+	PV -> provincies, 20 tm 31, corresponderend respectievelijk met 
+	["Groningen","Friesland","Drenthe","Overijssel","Flevoland","Gelderland","Utrecht","Noord-Holland","Zuid-Holland","Zeeland","Noord-Brabant","Limburg"]
+- Perioden :
+	xxxxKW0x -> jaargetal en kwartaalnummer
+	xxxxJJ00 -> behorende bij jaartotaal
+
+
+Visualizatie idee:
+landkaart -> woningprijzen van goedkoop naar duur met kleur
+klikken op kaart -> data per provincie in trendlijn, schuif met periode
+
+
+Aandachtspunten:
+- Wat is je doelgroep?
+- Hoe visualiseer je de data zodat de doelgroep er wat aan heeft.
+
+
