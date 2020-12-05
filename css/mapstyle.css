@@ -1,0 +1,38 @@
+@import url(httpsfonts.googleapis.comcssfamily=Open+Sans+Condensed300Josefin+SlabArvoLatoVollkornAbril+FatfaceOld+Standard+TTDroid+SansLobsterInconsolataMontserratPlayfair+DisplayKarlaAlegreyaLibre+BaskervilleMerriweatherLoraArchivo+NarrowNeutonSignikaQuestrialFjalla+OneBitterVarela+Round);
+:root {
+    --base_opacity: 0.3;
+  }
+
+.background {
+    fill:none;
+    pointer-events: all;
+}
+
+.map-layer {
+    fill: rgb(175, 49, 49);
+    stroke: #aaa;
+    fill-opacity: 0.3;
+}
+
+.effect-layer {
+    pointer-events: none;
+}
+
+.mouseOverText {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+}
+
+text.big-text {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.effect-layer text,
+text.dummy-text {
+    font-size: 12px;
+}
+
+.mouseover {
+    fill-opacity : 1;
+}
