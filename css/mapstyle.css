@@ -3,6 +3,14 @@
     --base_opacity: 0.3;
   }
 
+body {
+    font-family: "avenir next", Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    text-align: center;
+    cursor: default;
+}
+
 .background {
     fill:none;
     pointer-events: all;
@@ -36,4 +44,25 @@ text.dummy-text {
 
 .mouseover {
     fill-opacity : 1;
+}
+
+#mapContainer {
+    width: 50%;
+    float: left;
+}
+
+#lineGraphContainer {
+    width: 50%;
+    float: right;
+}
+
+h1 {
+    margin-bottom: 5px;
+    margin-top: 10px; 
+    font-size: 19px;
+} 
+
+h2 {
+    margin-bottom: 10px;
+    margin-top: 10px;
 }

@@ -75,7 +75,7 @@ d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
     // Draw each province as a path
     var centroids = features.map(function (feature){
         return path.centroid(feature);
-      });
+    });
     console.log(centroids)
 
     mapLayer.selectAll('path') 
