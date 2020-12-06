@@ -39,13 +39,12 @@ var mouseover = function (d) {
 
     // add text
     d3.select(this.parentNode).append("text")
-        // .attr("x", function () {
-        //     return y(d.y);
-        // })
-        .attr('x', 200)
-        .attr('y', 45)
-        .attr("dx", "6") // margin
-        .attr("dy", ".35em") // vertical-align
+        .attr('x',function(){
+            return path.centroid(d)[0]-40;
+        })
+        .attr('y',function(){
+            return path.centroid(d)[1]-5;
+        })
         .attr("class", "mouseOverText")//adding a label class
         .text(function () {
             return d.properties.name;
@@ -74,17 +73,18 @@ d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
     // })
 
     // Draw each province as a path
-    mapLayer.selectAll('path')
+    var centroids = features.map(function (feature){
+        return path.centroid(feature);
+      });
+    console.log(centroids)
+
+    mapLayer.selectAll('path') 
         .data(features) // de data van de json is nu gejoined aan het path element als we .enter() en append doen!!!
         .enter().append('path')
-        // .attr('centre',function(d){
-        //     return d.centroid();
-        // })
         .attr('d', path)
         .attr('vector-effect', 'non-scaling-stroke')
         .on('mouseover', mouseover)
         .on("mouseout", mouseout);
-
 });
 
 
