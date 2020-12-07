@@ -34,27 +34,74 @@ var mapLayer = g.append('g')
     .classed('map-layer', true);
 
 var mouseover = function (d) {
-    d3.select(this).style("fill", d3.select(this).attr('stroke'))
-        .attr("class", "mouseover")
+    if (d.properties.name!=selectedProvinceName){
+        d3.select(this).style("fill", d3.select(this).attr('stroke'))
+            .attr("class", "mouseover")
 
-    // add text
-    d3.select(this.parentNode).append("text")
+        // add text
+        d3.select(this.parentNode).append("text")
+            .attr('x',function(){
+                return path.centroid(d)[0]-40;
+            })
+            .attr('y',function(){
+                return path.centroid(d)[1]-5;
+            })
+            .attr("class", "mouseOverText")//adding a label class
+            .text(function () {
+                return d.properties.name;
+            });
+    }
+}
+
+var mouseout = function (d) {
+    d3.selectAll(".mouseOverText").remove()
+    if (d.properties.name!=selectedProvinceName){
+        d3.select(this).style("fill", d3.select(this).attr('stroke'))
+            .attr('class', 'map-layer')
+    }
+}
+
+var clickThis = function (d) {
+    if (selectedProvince == null) {
+        changeSelectedProvince(d, d.properties.name)
+        d3.selectAll(".mouseOverText").remove()
+        d3.select(this).style("fill",  "yellow")
+            .attr("class", "clickFill");
+        d3.select(this.parentNode).append("text")
         .attr('x',function(){
             return path.centroid(d)[0]-40;
         })
         .attr('y',function(){
             return path.centroid(d)[1]-5;
         })
-        .attr("class", "mouseOverText")//adding a label class
+        .attr("class", "clickText")//adding a label class
         .text(function () {
-            return d.properties.name;
+            return selectedProvinceName;
         });
-}
-
-var mouseout = function (d) {
-    d3.selectAll(".mouseOverText").remove()
-    d3.select(this).style("fill", d3.select(this).attr('stroke'))
-        .attr('class', 'map-layer')
+    } else if (selectedProvinceName == d.properties.name) {
+        changeSelectedProvince(null, "Nothing selected")
+        d3.selectAll(".clickText").remove()
+        d3.select(this).style("fill", d3.select(this).attr('stroke'))
+            .attr('class', 'map-layer');
+    } else {
+        d3.selectAll(".clickText").remove()
+        d3.selectAll(".clickFill").style("fill", d3.select(this).attr('stroke'))
+            .attr('class', 'map-layer');
+        changeSelectedProvince(d, d.properties.name)
+        d3.select(this).style("fill",  "yellow")
+        .attr("class", "clickFill");
+        d3.select(this.parentNode).append("text")
+        .attr('x',function(){
+            return path.centroid(d)[0]-40;
+        })
+        .attr('y',function(){
+            return path.centroid(d)[1]-5;
+        })
+        .attr("class", "clickText")//adding a label class
+        .text(function () {
+            return selectedProvinceName;
+        });
+    }
 }
 
 // Load map data
@@ -84,7 +131,8 @@ d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
         .attr('d', path)
         .attr('vector-effect', 'non-scaling-stroke')
         .on('mouseover', mouseover)
-        .on("mouseout", mouseout);
+        .on("mouseout", mouseout)
+        .on("click", clickThis);
 });
 
 
