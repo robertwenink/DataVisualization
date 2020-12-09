@@ -74,14 +74,11 @@ var clickThis = function (d) {
     if (!selectedProvinceName.includes(d.properties.name)) {
         // reset the view
         d3.selectAll(".mouseOverText").remove()
-        d3.selectAll(".clickedText").remove()
-        d3.selectAll(".clickFill")
-            .attr('class', 'map-layer');
         changeSelectedProvince(d, d.properties.name)
 
         // provide another fill
         d3.select(this)
-            .attr("class", "clickFill");
+            .attr("class", "clickedFill");
 
         // add text overlay
         d3.select(this.parentNode).append("text")
@@ -97,11 +94,9 @@ var clickThis = function (d) {
         });
     } else {
         // in case the province clicker already was the selected province, we want to deselect it
-        changeSelectedProvince(null, "Nothing selected")
+        changeSelectedProvince(null, d.properties.name)
         d3.selectAll(".clickedText").remove()
-        d3.selectAll(".clickedFill").remove()
-
-        d3.select(this)
+        d3.selectAll("path")
             .attr('class', 'map-layer');
     }
 }
