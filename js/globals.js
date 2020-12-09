@@ -2,12 +2,26 @@
 // Interaction in each component (map and line graph) is routed via this file.
 
 // Initialize selected axis and years used in both graphs.
-var selectedProvince = null;
-var selectedProvinceName = "Nothing selected";
+var selectedProvince = [];
+var selectedProvinceName = [];
+//Read the data
+
+var sumstat_glob = [];
+var data_glob = [];
 
 // Change the axis that is selected.
 function changeSelectedProvince(newSelectedProvince, newName) {
-    selectedProvince = newSelectedProvince;
-    selectedProvinceName = newName;
+    if (!selectedProvinceName.includes(newName)){
+        selectedProvince.push(newSelectedProvince);
+        selectedProvinceName.push(newName)
+    } else {
+        selectedProvince = [];
+        selectedProvinceName = [];
+    }
+    //changePlot(selectedProvince)
     setLineGraph();
 }
+
+// function changePlot(theseProvinces) {
+
+// }

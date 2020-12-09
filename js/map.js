@@ -34,7 +34,7 @@ var mapLayer = g.append('g')
     .classed('map-layer', true);
 
 var mouseover = function (d) {
-    if (d.properties.name!=selectedProvinceName){
+    if (!selectedProvinceName.includes(d.properties.name)){
         d3.select(this).style("fill", d3.select(this).attr('stroke'))
             .attr("class", "mouseover")
 
@@ -55,14 +55,14 @@ var mouseover = function (d) {
 
 var mouseout = function (d) {
     d3.selectAll(".mouseOverText").remove()
-    if (d.properties.name!=selectedProvinceName){
+    if (!selectedProvinceName.includes(d.properties.name)){
         d3.select(this).style("fill", d3.select(this).attr('stroke'))
             .attr('class', 'map-layer')
     }
 }
 
 var clickThis = function (d) {
-    if (selectedProvince == null) {
+    if (selectedProvince.length == 0) {
         changeSelectedProvince(d, d.properties.name)
         d3.selectAll(".mouseOverText").remove()
         d3.select(this).style("fill",  "yellow")
@@ -76,17 +76,14 @@ var clickThis = function (d) {
         })
         .attr("class", "clickText")//adding a label class
         .text(function () {
-            return selectedProvinceName;
+            return d.properties.name;
         });
-    } else if (selectedProvinceName == d.properties.name) {
-        changeSelectedProvince(null, "Nothing selected")
-        d3.selectAll(".clickText").remove()
-        d3.select(this).style("fill", d3.select(this).attr('stroke'))
-            .attr('class', 'map-layer');
-    } else {
+    } else if (selectedProvinceName.includes(d.properties.name)) {
+        changeSelectedProvince(d, d.properties.name)
         d3.selectAll(".clickText").remove()
         d3.selectAll(".clickFill").style("fill", d3.select(this).attr('stroke'))
-            .attr('class', 'map-layer');
+        .attr('class', 'map-layer');
+    } else {
         changeSelectedProvince(d, d.properties.name)
         d3.select(this).style("fill",  "yellow")
         .attr("class", "clickFill");
@@ -99,7 +96,7 @@ var clickThis = function (d) {
         })
         .attr("class", "clickText")//adding a label class
         .text(function () {
-            return selectedProvinceName;
+            return d.properties.name;
         });
     }
 }
