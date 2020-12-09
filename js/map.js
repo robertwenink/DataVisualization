@@ -2,6 +2,9 @@ var width = 700,
     height = 900,
     centered;
 
+var dxText = 40,
+    dyText = 5;
+
 // Set svg wi dth & height
 var svg = d3.select("#mapContainer").append("svg")
 .attr('width', width)
@@ -27,104 +30,87 @@ var projection = d3.geo.mercator()
 var path = d3.geo.path()
     .projection(projection);
 
+// could be used to overlay transitioning effects
 var effectLayer = g.append('g')
     .classed('effect-layer', true);
 
+// group layer for the map
 var mapLayer = g.append('g')
     .classed('map-layer', true);
 
+// mouseover event handler
 var mouseover = function (d) {
     if (d.properties.name!=selectedProvinceName){
-        d3.select(this).style("fill", d3.select(this).attr('stroke'))
+        // change the display of provinces on mouseover
+        d3.select(this)
             .attr("class", "mouseover")
 
-        // add text
+        // show province name on mouse over
         d3.select(this.parentNode).append("text")
             .attr('x',function(){
-                return path.centroid(d)[0]-40;
+                return path.centroid(d)[0]-dxText;
             })
             .attr('y',function(){
-                return path.centroid(d)[1]-5;
+                return path.centroid(d)[1]-dyText;
             })
-            .attr("class", "mouseOverText")//adding a label class
+            .attr("class", "mouseOverText")
             .text(function () {
                 return d.properties.name;
             });
     }
 }
 
+// mouseout event handler, counterpart of mouseover
 var mouseout = function (d) {
     d3.selectAll(".mouseOverText").remove()
     if (d.properties.name!=selectedProvinceName){
-        d3.select(this).style("fill", d3.select(this).attr('stroke'))
+        d3.select(this)
             .attr('class', 'map-layer')
     }
 }
 
+// clicked province event handler
 var clickThis = function (d) {
-    if (selectedProvince == null) {
-        changeSelectedProvince(d, d.properties.name)
+    if (selectedProvinceName != d.properties.name) {
+        // reset the view
         d3.selectAll(".mouseOverText").remove()
-        d3.select(this).style("fill",  "yellow")
-            .attr("class", "clickFill");
-        d3.select(this.parentNode).append("text")
-        .attr('x',function(){
-            return path.centroid(d)[0]-40;
-        })
-        .attr('y',function(){
-            return path.centroid(d)[1]-5;
-        })
-        .attr("class", "clickText")//adding a label class
-        .text(function () {
-            return selectedProvinceName;
-        });
-    } else if (selectedProvinceName == d.properties.name) {
-        changeSelectedProvince(null, "Nothing selected")
-        d3.selectAll(".clickText").remove()
-        d3.select(this).style("fill", d3.select(this).attr('stroke'))
-            .attr('class', 'map-layer');
-    } else {
-        d3.selectAll(".clickText").remove()
-        d3.selectAll(".clickFill").style("fill", d3.select(this).attr('stroke'))
+        d3.selectAll(".clickedText").remove()
+        d3.selectAll(".clickFill")
             .attr('class', 'map-layer');
         changeSelectedProvince(d, d.properties.name)
-        d3.select(this).style("fill",  "yellow")
-        .attr("class", "clickFill");
+
+        // provide another fill
+        d3.select(this)
+            .attr("class", "clickFill");
+
+        // add text overlay
         d3.select(this.parentNode).append("text")
         .attr('x',function(){
-            return path.centroid(d)[0]-40;
+            return path.centroid(d)[0]-dxText;
         })
         .attr('y',function(){
-            return path.centroid(d)[1]-5;
+            return path.centroid(d)[1]-dyText;
         })
-        .attr("class", "clickText")//adding a label class
+        .attr("class", "clickedText")
         .text(function () {
             return selectedProvinceName;
         });
+    } else {
+        // in case the province clicker already was the selected province, we want to deselect it
+        changeSelectedProvince(null, "Nothing selected")
+        d3.selectAll(".clickedText").remove()
+        d3.selectAll(".clickedFill").remove()
+
+        d3.select(this)
+            .attr('class', 'map-layer');
     }
 }
 
 // Load map data
 d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
     var features = mapData.features;
-    console.log(features);
 
-    // features.forEach(function (feature) {
-    //     if (feature.geometry.type == "MultiPolygon") {
-    //         feature.geometry.coordinates.forEach(function (polygon) {
-    //             polygon.forEach(function (ring) {
-    //                 // ring.reverse();
-    //             })
-    //         })
-    //     }
-    // })
-
-    // Draw each province as a path
-    var centroids = features.map(function (feature){
-        return path.centroid(feature);
-    });
-    console.log(centroids)
-
+    // draw each path into the mapLayer
     mapLayer.selectAll('path') 
         .data(features) // de data van de json is nu gejoined aan het path element als we .enter() en append doen!!!
         .enter().append('path')
@@ -135,35 +121,3 @@ d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
         .on("click", clickThis);
 });
 
-
-function resize() {
-    // uit het voorbeeld, nog correct implementeren
-    viewWidth = window.innerWidth;
-    viewHeight = window.innerHeight - 50;
-
-    width = viewWidth - margin.left - margin.right;
-    height = viewHeight - margin.top - margin.bottom;
-
-    x.range([0, width]);
-    y.range([height, 0]);
-
-    xAxis.scale(x);
-    yAxis.scale(y);
-
-    d3.select("#container")
-        .attr("width", viewWidth);
-
-    d3.select("#vis")
-        .attr("width", viewWidth)
-        .attr("height", viewHeight);
-
-    d3.select("svg")
-        .attr("width", viewWidth)
-        .attr("height", viewHeight);
-
-
-    drawScatterplot(xValue, yValue, colorValue, sizeValue);
-}
-
-//resize();
-d3.select(window).on("resize", resize);
