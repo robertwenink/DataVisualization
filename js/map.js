@@ -40,7 +40,7 @@ var mapLayer = g.append('g')
 
 // mouseover event handler
 var mouseover = function (d) {
-    if (d.properties.name!=selectedProvinceName){
+if (!selectedProvinceName.includes(d.properties.name)){
         // change the display of provinces on mouseover
         d3.select(this)
             .attr("class", "mouseover")
@@ -63,7 +63,7 @@ var mouseover = function (d) {
 // mouseout event handler, counterpart of mouseover
 var mouseout = function (d) {
     d3.selectAll(".mouseOverText").remove()
-    if (d.properties.name!=selectedProvinceName){
+    if (!selectedProvinceName.includes(d.properties.name)){
         d3.select(this)
             .attr('class', 'map-layer')
     }
@@ -71,7 +71,7 @@ var mouseout = function (d) {
 
 // clicked province event handler
 var clickThis = function (d) {
-    if (selectedProvinceName != d.properties.name) {
+    if (!selectedProvinceName.includes(d.properties.name)) {
         // reset the view
         d3.selectAll(".mouseOverText").remove()
         d3.selectAll(".clickedText").remove()
@@ -93,7 +93,7 @@ var clickThis = function (d) {
         })
         .attr("class", "clickedText")
         .text(function () {
-            return selectedProvinceName;
+            return d.properties.name;
         });
     } else {
         // in case the province clicker already was the selected province, we want to deselect it
