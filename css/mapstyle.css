@@ -6,7 +6,6 @@
 body {
     font-family: "avenir next", Arial, sans-serif;
     font-size: 12px;
-    font-weight: 300;
     text-align: center;
     cursor: default;
 }
@@ -29,6 +28,7 @@ body {
 
 .effect-layer {
     pointer-events: none;
+    user-select: none;
 }
 
 .mouseOverText {
@@ -37,6 +37,7 @@ body {
     text-align:center;
     pointer-events: none;
     stroke: black;
+    user-select: none;
 }
 
 .clickedText {
@@ -46,6 +47,7 @@ body {
     stroke: black;
     text-align:center;
     pointer-events: none;
+    user-select: none;
 }
 
 text.big-text {
@@ -65,6 +67,16 @@ text.big-text {
 #lineGraphContainer {
     width: 50%;
     float: right;
+}
+
+.select-province-message {
+    font-size : 14px;
+    user-select: none;
+}
+
+#id {
+    margin-top : auto;
+    text-align: center;
 }
 
 h1 {

@@ -96,7 +96,7 @@ var clickThis = function (d) {
         // in case the province clicker already was the selected province, we want to deselect it
         changeSelectedProvince(null, d.properties.name)
         d3.selectAll(".clickedText").remove()
-        d3.selectAll("path")
+        mapLayer.selectAll("path")
             .attr('class', 'map-layer');
     }
 }
@@ -106,7 +106,7 @@ d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
     var features = mapData.features;
 
     // draw each path into the mapLayer
-    mapLayer.selectAll('path') 
+    mapLayer.selectAll() 
         .data(features) // de data van de json is nu gejoined aan het path element als we .enter() en append doen!!!
         .enter().append('path')
         .attr('d', path)
