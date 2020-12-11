@@ -3,7 +3,7 @@ var margin = { top: 10, right: 30, bottom: 30, left: 60 },
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-var sumstat, res, color, x, y;
+var x, y;
 
 // append the svg object to the body of the page
 var svg = d3.select("#lineGraphContainer")
@@ -18,8 +18,10 @@ var svg = d3.select("#lineGraphContainer")
 var message = svg.append("g")
     .attr("class", "message")
 
+// this function initialises the lineGraph and read the data into the global sumstat!
 function init() {
     d3.csv('datasets/dataset.csv', function (data) {
+        data_glob = data
         sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
             .key(function (d) { return d.Toelichting; })
             .entries(data);
@@ -31,18 +33,18 @@ function init() {
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x).ticks(5))
-        
+
         // add x-label
         svg.append("text")
             .attr("class", "x label")
             .attr("text-anchor", "middle")
-            .attr("x", width/2)
-            .attr("y", height+30)
+            .attr("x", width / 2)
+            .attr("y", height + 30)
             .text("Perioden");
 
         // Add Y axis
         y = d3.scaleLinear()
-            .domain([0, d3.max(data, function (d) { return +d.Woningvoorraad; })])
+            .domain([0, d3.max(data, function (d) { return +d[dataname]; })])
             .range([height, 0]);
         svg.append("g")
             .call(d3.axisLeft(y))
@@ -51,16 +53,12 @@ function init() {
             .attr("class", "y label")
             .attr("text-anchor", "middle")
             .attr("y", -53)
-            .attr("x",-height/2)
+            .attr("x", -height / 2)
             .attr("transform", "rotate(-90)")
-            .text("Woningvoorraad");
+            .text(dataname);
 
-        // color palette
-        res = sumstat.map(function (d) { return d.key }) // list of group names
-        color = d3.scaleOrdinal()
-            .domain(res)
-            .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999'])
-        
+        setColorPalettes();
+
         // after data has been loaded we can add the NL total data
         setDataNL();
     })
@@ -99,12 +97,13 @@ function setDataNL() {
         .enter()
         .append("path")
         .attr("fill", "none")
-        .attr("stroke", function (d) { return color(d.key) })
+        // .attr("stroke", function (d) { return color(d.key) })
+        .attr("stroke", "red")
         .attr("stroke-width", 1.5)
         .attr("d", function (d) {
             return d3.line()
                 .x(function (d) { return x(d.Perioden); })
-                .y(function (d) { return y(d.Woningvoorraad); })
+                .y(function (d) { return y(d[dataname]); })
                 (d.values)
         })
 }
@@ -135,12 +134,12 @@ function setLineGraph() {
             .enter()
             .append("path")
             .attr("class", "lineplotelement")
-            .attr("stroke", function (d) { return color(d.key) })
+            .attr("stroke", function (d) { return colorGraph(d.key) })
             .attr("stroke-width", 1.5)
             .attr("d", function (d) {
                 return d3.line()
                     .x(function (d) { return x(d.Perioden); })
-                    .y(function (d) { return y(d.Woningvoorraad); })
+                    .y(function (d) { return y(d[dataname]); })
                     (d.values)
             })
     }

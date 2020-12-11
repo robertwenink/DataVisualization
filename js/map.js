@@ -7,14 +7,14 @@ var dxText = 40,
 
 // Set svg wi dth & height
 var svg = d3.select("#mapContainer").append("svg")
-.attr('width', width)
-.attr('height', height);
+    .attr('width', width)
+    .attr('height', height);
 
 // Add background
 svg.append('rect')
-.attr('class', 'background')
-.attr('width', width)
-.attr('height', height)
+    .attr('class', 'background')
+    .attr('width', width)
+    .attr('height', height)
 
 var g = svg.append('g');
 
@@ -24,7 +24,7 @@ var projection = d3.geo.mercator()
     // Center the map to NL
     .center([5.3, 52.2])
     .translate([width / 2, height / 2]);
-    // .fitSize([width, height], path);
+// .fitSize([width, height], path);
 
 // define the 'path' variable for drawing, and its projection type
 var path = d3.geo.path()
@@ -40,18 +40,19 @@ var mapLayer = g.append('g')
 
 // mouseover event handler
 var mouseover = function (d) {
-if (!selectedProvinceName.includes(d.properties.name)){
-        // change the display of provinces on mouseover
-        d3.select(this)
-            .attr("class", "mouseover")
+    // change the display of provinces on mouseover
+    d3.select(this)
+        .attr("class", "mouseover")
 
+    // if not displayed allready otherwise, display a text
+    if (!selectedProvinceName.includes(d.properties.name)) {
         // show province name on mouse over
         d3.select(this.parentNode).append("text")
-            .attr('x',function(){
-                return path.centroid(d)[0]-dxText;
+            .attr('x', function () {
+                return path.centroid(d)[0] - dxText;
             })
-            .attr('y',function(){
-                return path.centroid(d)[1]-dyText;
+            .attr('y', function () {
+                return path.centroid(d)[1] - dyText;
             })
             .attr("class", "mouseOverText")
             .text(function () {
@@ -63,9 +64,9 @@ if (!selectedProvinceName.includes(d.properties.name)){
 // mouseout event handler, counterpart of mouseover
 var mouseout = function (d) {
     d3.selectAll(".mouseOverText").remove()
-    if (!selectedProvinceName.includes(d.properties.name)){
+    if (!selectedProvinceName.includes(d.properties.name)) {
         d3.select(this)
-            .attr('class', 'map-layer')
+            .attr('class', '')
     }
 }
 
@@ -78,26 +79,30 @@ var clickThis = function (d) {
 
         // provide another fill
         d3.select(this)
-            .attr("class", "clickedFill");
+            .attr("class", "mouseover clickedFill")
+            .attr("fill", function (d) { return colorGraph(d.properties.name) })
 
         // add text overlay
         d3.select(this.parentNode).append("text")
-        .attr('x',function(){
-            return path.centroid(d)[0]-dxText;
-        })
-        .attr('y',function(){
-            return path.centroid(d)[1]-dyText;
-        })
-        .attr("class", "clickedText")
-        .text(function () {
-            return d.properties.name;
-        });
+            .attr('x', function () {
+                return path.centroid(d)[0] - dxText;
+            })
+            .attr('y', function () {
+                return path.centroid(d)[1] - dyText;
+            })
+            .attr("class", "clickedText")
+            .text(function () {
+                return d.properties.name;
+            });
     } else {
         // in case the province clicker already was the selected province, we want to deselect it
         changeSelectedProvince(null, d.properties.name)
         d3.selectAll(".clickedText").remove()
         mapLayer.selectAll("path")
-            .attr('class', 'map-layer');
+            .attr('class', '')
+            .attr("fill", function (d) { return colorMap(returnValuesOfPath(d))});
+        d3.select(this)
+            .attr("class", "mouseover")
     }
 }
 
@@ -106,13 +111,13 @@ d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
     var features = mapData.features;
 
     // draw each path into the mapLayer
-    mapLayer.selectAll() 
+    mapLayer.selectAll("path")
         .data(features) // de data van de json is nu gejoined aan het path element als we .enter() en append doen!!!
         .enter().append('path')
         .attr('d', path)
         .attr('vector-effect', 'non-scaling-stroke')
         .on('mouseover', mouseover)
         .on("mouseout", mouseout)
-        .on("click", clickThis);
+        .on("click", clickThis)
 });
 

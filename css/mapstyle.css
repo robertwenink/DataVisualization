@@ -16,14 +16,13 @@ body {
 }
 
 .map-layer {
-    fill: rgb(175, 49, 49);
+    /* fill: rgb(175, 49, 49); */
     stroke: #aaa;
-    fill-opacity: 0.3;
+    fill-opacity: 0.9;
 }
 
 .clickedFill {
     fill-opacity: 1;
-    fill: yellow;
 }
 
 .effect-layer {
@@ -57,6 +56,8 @@ text.big-text {
 
 .mouseover {
     fill-opacity : 1;
+    stroke: black;
+    stroke-width: 5;
 }
 
 #mapContainer {
