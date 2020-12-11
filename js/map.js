@@ -3,7 +3,7 @@ var width = 700,
     centered;
 
 var dxText = 40,
-    dyText = 5;
+    dyText = -5;
 
 // Set svg wi dth & height
 var svg = d3.select("#mapContainer").append("svg")
@@ -30,10 +30,6 @@ var projection = d3.geo.mercator()
 var path = d3.geo.path()
     .projection(projection);
 
-// could be used to overlay transitioning effects
-var effectLayer = g.append('g')
-    .classed('effect-layer', true);
-
 // group layer for the map
 var mapLayer = g.append('g')
     .classed('map-layer', true);
@@ -47,7 +43,9 @@ var mouseover = function (d) {
     // if not displayed allready otherwise, display a text
     if (!selectedProvinceName.includes(d.properties.name)) {
         // show province name on mouse over
-        d3.select(this.parentNode).append("text")
+        text = d3.select(this.parentNode).append("text")
+            .attr('background-size', "10px 20px")
+            .attr('text-align',"center")
             .attr('x', function () {
                 return path.centroid(d)[0] - dxText;
             })

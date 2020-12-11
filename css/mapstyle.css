@@ -17,7 +17,7 @@ body {
 
 .map-layer {
     /* fill: rgb(175, 49, 49); */
-    stroke: #aaa;
+    stroke: transparent;
     fill-opacity: 0.9;
 }
 
@@ -36,6 +36,8 @@ body {
     text-align:center;
     pointer-events: none;
     stroke: black;
+    background-color: white;
+    background-size: auto;
     user-select: none;
 }
 
@@ -57,7 +59,9 @@ text.big-text {
 .mouseover {
     fill-opacity : 1;
     stroke: black;
-    stroke-width: 5;
+    stroke-width: 2;
+    transition: fill-opacity .2s;
+    transition: stroke .2s;
 }
 
 #mapContainer {
