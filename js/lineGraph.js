@@ -47,10 +47,11 @@ function init() {
             .domain([0, d3.max(data, function (d) { return +d[dataname]; })])
             .range([height, 0]);
         svg.append("g")
+            .attr("class", "yaxis")
             .call(d3.axisLeft(y))
 
         svg.append("text")
-            .attr("class", "y label")
+            .attr("class", "ylabel")
             .attr("text-anchor", "middle")
             .attr("y", -53)
             .attr("x", -height / 2)
@@ -63,6 +64,22 @@ function init() {
         setDataNL();
     })
     setText();
+}
+
+function resetYaxis() {
+    d3.select(".ylabel").text(dataname)
+    d3.csv('datasets/dataset.csv', function (data) {
+        y = d3.scaleLinear()
+            .domain([0, d3.max(data, function (d) { return +d[dataname]; })])
+            .range([height, 0]);
+
+        var t = d3.transition()
+            .duration(5)
+        
+        svg.selectAll(".yaxis")
+            .transition(t)
+            .call(d3.axisLeft(y))
+    })
 }
 
 function setText() {
@@ -97,6 +114,7 @@ function setDataNL() {
         .enter()
         .append("path")
         .attr("fill", "none")
+        .attr("class", "NLlinegraphelement")
         // .attr("stroke", function (d) { return color(d.key) })
         .attr("stroke", "red")
         .attr("stroke-width", 1.5)
@@ -109,7 +127,7 @@ function setDataNL() {
 }
 
 // Update the line graph according to selected map variables.
-function setLineGraph() {
+function setLineGraphProvince() {
     setText();
 
     // reset lines
@@ -135,6 +153,7 @@ function setLineGraph() {
             .append("path")
             .attr("class", "lineplotelement")
             .attr("stroke", function (d) { return colorGraph(d.key) })
+            .attr("fill", "none")
             .attr("stroke-width", 1.5)
             .attr("d", function (d) {
                 return d3.line()
@@ -143,6 +162,42 @@ function setLineGraph() {
                     (d.values)
             })
     }
+}
+
+// Update the line graph according to selected yvalues.
+function setLineGraphYValue() {
+    setText();
+
+    d3.selectAll(".NLlinegraphelement").remove()
+    d3.selectAll(".lineplotelement").remove()
+
+    setDataNL();
+    resetYaxis();
+    // Accumulate data to add
+    data = [];
+
+    function isProvince(value) {
+        if (selectedProvinceName.includes(value.key)) {
+            data.push(value)
+        }
+    }
+    sumstat.forEach(isProvince);
+
+    // Draw the line
+    svg.selectAll(".lineplotelement")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("class", "lineplotelement")
+        .attr("stroke", function (d) { return colorGraph(d.key) })
+        .attr("fill", "none")
+        .attr("d", function (d) {
+            return d3.line()
+                .x(function (d) { return x(d.Perioden); })
+                .y(function (d) { return y(d[dataname]); })
+                (d.values)
+        })
+
 }
 
 init();

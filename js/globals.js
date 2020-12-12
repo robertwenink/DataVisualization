@@ -53,5 +53,20 @@ function changeSelectedProvince(newSelectedProvince, newName) {
         selectedProvinceName = [];
     }
     //changePlot(selectedProvince)
-    setLineGraph();
+    setLineGraphProvince();
 }
+
+function updatePoints(v) {
+        dataname = v;
+        setLineGraphYValue();
+  }
+
+function selectVariable(id) {
+    var variable;
+    if(id == 0)
+    {
+      var e = document.getElementById("yAxisItem");
+      yValue = e.options[e.selectedIndex].value;
+    } 
+    updatePoints(yValue);
+  }

@@ -15,6 +15,19 @@
 <body>
     <h1 id="title">Housing prices in the Netherlands</h1>
     <h2 id="subtitle">Classical macro-economics: The relation of asset scarceness and price</h4>
+    <div id="container">
+        <div id="selectionUI">
+            yAxis:
+            <select id="yAxisItem" onchange="selectVariable(0)">
+                <option value="GemiddeldeVerkoopprijs" selected="selected">GemiddeldeVerkoopprijs</option>
+                <option value="PrijsindexVerkoopprijzen">PrijsindexVerkoopprijzen</option>
+                <option value="Woningvoorraad">Woningvoorraad</option>
+                <option value="Toevoeging">Toevoeging</option> 
+                <option value="VerkochteWoningen">VerkochteWoningen</option>
+                <option value="TotaleWaardeVerkoopprijzen">TotaleWaardeVerkoopprijzen</option>
+            </select>
+        </div>
+        </div>
     <div id="slider"></div>
     <div id="mapContainer"></div>
     <div id="lineGraphContainer"></div>
