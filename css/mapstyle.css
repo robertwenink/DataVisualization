@@ -69,7 +69,7 @@ text.big-text {
     float: left;
 }
 
-#lineGraphContainer {
+#lineGraphContainer #selectionMatrixContainer {
     width: 50%;
     float: right;
 }

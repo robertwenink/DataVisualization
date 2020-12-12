@@ -13,8 +13,9 @@ var colorGraph, colorMap;
 var dataKeyHelperArray = ["Nederland","Groningen","Friesland","Drenthe","Overijssel","Flevoland","Gelderland","Utrecht","Noord-Holland","Zuid-Holland","Zeeland","Noord-Brabant","Limburg"];
 
 // dummy om aan te geven in welke data we geinteresseerd zijn, dit kan later worden ingevuld door de waarde van de dropdown
-var dataname = "GemiddeldeVerkoopprijs"
+// var dataname = "GemiddeldeVerkoopprijs"
 // var dataname = "Woningvoorraad"
+var dataname = "Inwoners15JaarOfOuder"
 
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;
