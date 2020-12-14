@@ -7,8 +7,6 @@ var dxText = 40,
 
 // Set svg wi dth & height
 var svg = d3.select("#mapContainer").append("svg")
-    .attr('xmlns', "http://www.w3.org/2000/svg")
-    .attr('version', "1.1")
     .attr('width', width)
     .attr('height', height);
 
@@ -95,7 +93,7 @@ var clickThis = function (d) {
         // provide another fill
         d3.select(this)
             .attr("class", "mouseover clickedFill")
-            .attr("fill", function (d) { return colorGraph(d.properties.name) })
+        // .attr("fill", function (d) { return colorGraph(d.properties.name) })
 
         // provide province name with rectangle behind it for readability
         g = d3.select(this.parentNode).append('g')
@@ -110,19 +108,23 @@ var clickThis = function (d) {
         mapLayer.selectAll("path")
             .attr('class', '')
             .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
-        d3.select(this)
-            .attr("class", "mouseover")
-
-        // provide province name with rectangle behind it for readability
-        g = d3.select(this.parentNode).append('g')
-            .attr("class", "mouseOverText")
-
-        overlayText(d, g);
+        mouseover.call(this, d)
     }
+}
+
+function recolorMap() {
+    mapLayer.selectAll("path")
+        .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
+}
+
+function redrawMap() {
+    setColorPalettes();
+    recolorMap()
 }
 
 // Load map data
 d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
+// d3.json('datasets/gemeentes.geojson', function (error, mapData) {
     var features = mapData.features;
 
     // draw each path into the mapLayer

@@ -1,0 +1,33 @@
+body {
+    font-family: "avenir next", Arial, sans-serif;
+    font-size: 12px;
+    text-align: center;
+    cursor: default;
+    user-select: none;
+}
+
+h1 {
+    margin-bottom: 5px;
+    margin-top: 10px; 
+    font-size: 19px;
+} 
+
+h2 {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#lineGraphContainer #selectionMatrixContainer {
+    width: 50%;
+    float: right;
+}
+
+#mapContainer {
+    width: 50%;
+    float: left;
+}
+
+.background {
+    fill:none;
+    pointer-events: all;
+}

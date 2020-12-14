@@ -1,0 +1,22 @@
+.select-province-message {
+    font-size : 14px;
+}
+
+.lineplotelement {
+    fill : none;
+    stroke-width: 1.5;
+}
+
+.NLlinegraphelement {
+    fill : none;
+    stroke-width: 1.5;
+    /* stroke: red; */
+}
+
+/* .tick {
+    user-select: none;
+}
+
+.label {
+    user-select: none;
+} */

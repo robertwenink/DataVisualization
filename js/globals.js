@@ -5,39 +5,44 @@
 var sumstat;
 var data_glob;
 
-// Initialize selected axis and years used in both graphs.
-var selectedProvince = [];
-var selectedProvinceName = [];
-
 var colorGraph, colorMap;
 var dataKeyHelperArray = ["Nederland","Groningen","Friesland","Drenthe","Overijssel","Flevoland","Gelderland","Utrecht","Noord-Holland","Zuid-Holland","Zeeland","Noord-Brabant","Limburg"];
 
-// dummy om aan te geven in welke data we geinteresseerd zijn, dit kan later worden ingevuld door de waarde van de dropdown
-// var dataname = "GemiddeldeVerkoopprijs"
-// var dataname = "Woningvoorraad"
-var dataname = "Inwoners15JaarOfOuder"
+// Initialize selected axis and years used in both graphs.
+var selectedProvince = [];
+var selectedProvinceName = []; // this one is generally used
+var selectedToPlot = []; 
+
+// to add "Nederland" if we always want to show the country average irrespective of selection
+var showAverageNL = true;
+if (showAverageNL) {
+    var selectedToPlot = [dataKeyHelperArray[0]]; 
+}
+
+// initial names of the x and y Data to display
+var yData = "GemiddeldeVerkoopprijs"
+var xData = "Perioden"
 
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;
-    return v[v.length-1][dataname] // de index hier kan afhankelijk worden gemaakt van jaargetal!!
+    return v[v.length-1][yData] // de index hier kan afhankelijk worden gemaakt van jaargetal!!
 }
 
 function setColorPalettes() {
     // GraphColor can only be generated after the data is known!
     // this palette is dependent on the categorical data i.e. the province names
-    res = sumstat.map(function (d,i) { return d.key }) // list of group names
-    console.log(sumstat)
+    res = sumstat.map(function (d,i) { return d.key }) 
     colorGraph = d3.scaleOrdinal()
         .domain(res)
         .range(d3.schemeSet3);
 
     // create color Pallete for use in the map
-    // this palette is dependent on the data values; it should not include the NL overall data range values!
+    // this palette is dependent on the data values
     colorMap = d3.scaleSequential()
-        .domain(d3.extent(data_glob, function (d) { if(!d.RegioS.includes("NL")){return Math.max(d[dataname]);} }))
-        // select: Magma, Viridis, Plasma, Inferno, Cividis
+        .domain(d3.extent(data_glob, function (d) { if(!d.RegioS.includes("NL")){return +d[yData];} }))
+
+        // viable options: Magma, Viridis, Plasma, Inferno, Cividis
         .interpolator(d3.interpolateCividis);
-        // .interpolator(d3.interpolateViridis);
 
     // add color to the map here, when we are sure of loaded data
     mapLayer.selectAll("path")
@@ -54,20 +59,11 @@ function changeSelectedProvince(newSelectedProvince, newName) {
         selectedProvinceName = [];
     }
     //changePlot(selectedProvince)
-    setLineGraphProvince();
+    if (showAverageNL) {
+        selectedToPlot = [dataKeyHelperArray[0], selectedProvinceName].flat();
+    } else {
+        selectedToPlot = selectedProvinceName;
+    }
+    updateGraph();
 }
 
-function updatePoints(v) {
-        dataname = v;
-        setLineGraphYValue();
-  }
-
-function selectVariable(id) {
-    var variable;
-    if(id == 0)
-    {
-      var e = document.getElementById("yAxisItem");
-      yValue = e.options[e.selectedIndex].value;
-    } 
-    updatePoints(yValue);
-  }
