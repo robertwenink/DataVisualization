@@ -77,6 +77,7 @@ function loadData() {
         initGraph()
         drawGraph()
         redrawMap()
+        buildSelectionMatrix()
     })
 }
 

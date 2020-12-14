@@ -25,7 +25,7 @@ function initGraph() {
         data = data_glob
         // Add X axis --> it is a date format
         x = d3.scaleLinear()
-            .domain(d3.extent(data, function (d) { return d[xData]; }))
+            .domain(d3.extent(data, function (d) { return +d[xData]; }))
             .range([0, width]);
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")

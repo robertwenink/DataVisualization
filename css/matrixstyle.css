@@ -1,3 +1,9 @@
 .matrixBlock {
-    fill:blue
+    fill:white;
+}
+
+.matrixLine {
+    user-select: none;
+    pointer-events: none; 
+    fill: none;
 }
