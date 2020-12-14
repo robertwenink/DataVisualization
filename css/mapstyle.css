@@ -39,6 +39,6 @@
     fill-opacity : 1;
     stroke: black;
     stroke-width: 2;
-    transition: fill-opacity .2s;
-    transition: stroke .2s;
+    transition: fill-opacity .4s;
+    transition: stroke .4s;
 }

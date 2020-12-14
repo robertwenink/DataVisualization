@@ -48,13 +48,14 @@ function buildSelectionMatrix() {
                 .attr("height", h)
                 .attr('x', w * (ix) + (ix + 1) * spacing)
                 .attr('y', h * (iy) + (iy + 1) * spacing)
-                .attr("fill", "black")
-                .attr('stroke-width', '3')
+                .attr("class","matrixBlock")
                 .on('click',clickSelectionMatrix)
-                .attr('xData', xData)
-                .attr('yData', yData);
         });
     });
+}
+
+function fillDataSelectionMatrix() {
+
 }
 
 buildSelectionMatrix();

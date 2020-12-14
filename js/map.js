@@ -108,6 +108,8 @@ var clickThis = function (d) {
         mapLayer.selectAll("path")
             .attr('class', '')
             .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
+
+        // we just clicked, so mouse is still hovering!
         mouseover.call(this, d)
     }
 }

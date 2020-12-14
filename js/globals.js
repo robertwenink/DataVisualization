@@ -29,19 +29,17 @@ function returnValuesOfPath(d) {
 }
 
 function setColorPalettes() {
-    // GraphColor can only be generated after the data is known!
     // this palette is dependent on the categorical data i.e. the province names
-    res = sumstat.map(function (d,i) { return d.key }) 
+    res = sumstat.map(function (d) { return d.key }) 
     colorGraph = d3.scaleOrdinal()
         .domain(res)
         .range(d3.schemeSet3);
 
-    // create color Pallete for use in the map
-    // this palette is dependent on the data values
+    // create color Pallete for use in the map dependent on data values
     colorMap = d3.scaleSequential()
         .domain(d3.extent(data_glob, function (d) { if(!d.RegioS.includes("NL")){return +d[yData];} }))
 
-        // viable options: Magma, Viridis, Plasma, Inferno, Cividis
+        // viable options part of same scheme: Magma, Viridis, Plasma, Inferno, Cividis
         .interpolator(d3.interpolateCividis);
 
     // add color to the map here, when we are sure of loaded data
@@ -66,4 +64,21 @@ function changeSelectedProvince(newSelectedProvince, newName) {
     }
     updateGraph();
 }
+
+function loadData() {
+    d3.csv('datasets/dataset.csv', function (data) {
+        data_glob = data
+        sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
+            .key(function (d) { return d.Toelichting; })
+            .entries(data)
+
+        // only after the previous has been completed can we load components dependent on the data
+        setColorPalettes()
+        initGraph()
+        drawGraph()
+        redrawMap()
+    })
+}
+
+loadData()
 

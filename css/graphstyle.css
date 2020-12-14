@@ -13,6 +13,14 @@
     /* stroke: red; */
 }
 
+.grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.6;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+
+
 /* .tick {
     user-select: none;
 }

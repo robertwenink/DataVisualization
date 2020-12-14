@@ -21,13 +21,8 @@ var message = svg.append("g")
     .attr("class", "message")
 
 // this function initialises the lineGraph and read the data into the global sumstat!
-function init() {
-    d3.csv('datasets/dataset.csv', function (data) {
-        data_glob = data
-        sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
-            .key(function (d) { return d.Toelichting; })
-            .entries(data);
-
+function initGraph() {
+        data = data_glob
         // Add X axis --> it is a date format
         x = d3.scaleLinear()
             .domain(d3.extent(data, function (d) { return d[xData]; }))
@@ -35,15 +30,7 @@ function init() {
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .attr("class", "xaxis")
-            .call(d3.axisBottom(x).ticks(5))
-
-        // add x-label
-        svg.append("text")
-            .attr("class", "xlabel label")
-            .attr("text-anchor", "middle")
-            .attr("x", width / 2)
-            .attr("y", height + 30)
-            .text("Perioden");
+            .call(d3.axisBottom(x))
 
         // Add Y axis
         y = d3.scaleLinear()
@@ -53,6 +40,32 @@ function init() {
             .attr("class", "yaxis")
             .call(d3.axisLeft(y))
 
+        // add the X gridlines
+        svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x)
+                .tickSize(-height)
+                .tickFormat("")
+            )
+
+        // add the Y gridlines
+        svg.append("g")
+            .attr("class", "grid")
+            .call(d3.axisLeft(y)
+                .tickSize(-width)
+                .tickFormat("")
+            )
+
+        // add x-label
+        svg.append("text")
+            .attr("class", "xlabel label")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", height + 30)
+            .text("Perioden");
+
+        // add y-label
         svg.append("text")
             .attr("class", "ylabel label")
             .attr("text-anchor", "middle")
@@ -60,12 +73,6 @@ function init() {
             .attr("x", -height / 2)
             .attr("transform", "rotate(-90)")
             .text(yData);
-
-        setColorPalettes();
-
-        // after data has been loaded we can add the NL total data
-        drawGraph();
-    })
 }
 
 function rescaleAxis() {
@@ -94,7 +101,7 @@ function rescaleAxis() {
 function setText() {
     // reset DOM elements first
     message.selectAll(".select-province-message").remove()
-    if (selectedProvince.length == 0) {
+    if (selectedProvinceName.length == 0) {
         // Show a message suggesting an axis could be selected.
         message
             .append("text")
@@ -133,6 +140,8 @@ function drawGraph() {
 }
 
 function updateGraph() {
+    setText();
+    
     // redraw the lines with new data
     svg.selectAll(".lineplotelement")
         .attr("stroke", "none")
@@ -150,10 +159,8 @@ function updateGraph() {
 }
 
 
-// Update the line graph according to selected yvalues.
+// Update the line graph according to selected values.
 function redrawLineGraph() {
     rescaleAxis();
     updateGraph();
 }
-
-init();
