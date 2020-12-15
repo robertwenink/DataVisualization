@@ -6,7 +6,7 @@
 }
 
 .clickedFill {
-    fill-opacity: 1;
+    fill-opacity: 0.9;
 }
 
 .effect-layer {
@@ -41,4 +41,9 @@
     stroke-width: 2;
     transition: fill-opacity .4s;
     transition: stroke .4s;
+}
+
+#diagonalHatch {
+    stroke: transparent;
+    pointer-events: none;
 }

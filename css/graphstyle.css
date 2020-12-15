@@ -7,10 +7,10 @@
     stroke-width: 1.5;
 }
 
-.NLlinegraphelement {
+.selected {
+    /* stroke: black; */
     fill : none;
-    stroke-width: 1.5;
-    /* stroke: red; */
+    stroke-width: 4;
 }
 
 .grid line {
@@ -20,11 +20,3 @@
     shape-rendering: crispEdges;
   }
 
-
-/* .tick {
-    user-select: none;
-}
-
-.label {
-    user-select: none;
-} */

@@ -62,7 +62,7 @@ function changeSelectedProvince(newSelectedProvince, newName) {
     } else {
         selectedToPlot = selectedProvinceName;
     }
-    updateGraph();
+    redrawLineGraph();
 }
 
 function loadData() {

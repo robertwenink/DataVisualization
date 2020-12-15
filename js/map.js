@@ -1,5 +1,7 @@
-var width = 700,
-    height = 900,
+var screenscaling = 1.0
+
+var width = 735 * screenscaling,
+    height = 840 * screenscaling,
     centered;
 
 var dxText = 40,
@@ -10,23 +12,28 @@ var svg = d3.select("#mapContainer").append("svg")
     .attr('width', width)
     .attr('height', height);
 
-// Add background
-svg.append('rect')
-    .attr('class', 'background')
-    .attr('width', width)
-    .attr('height', height)
-
 var projection = d3.geo.mercator()
-    // Set appropriate scale for display; TODO change according to screen size
-    .scale(10000)
+    // Set appropriate scale for display
+    .scale(10000 * screenscaling)
     // Center the map to NL
-    .center([5.3, 52.2])
+    .center([5.3, 52.17])
     .translate([width / 2, height / 2]);
-// .fitSize([width, height], path);
 
 // define the 'path' variable for drawing, and its projection type
 var path = d3.geo.path()
     .projection(projection);
+
+// add definition for striped overlay
+svg.append('defs')
+    .append('pattern')
+    .attr('id', 'diagonalHatch')
+    .attr('patternUnits', 'userSpaceOnUse')
+    .attr('width', 8)
+    .attr('height', 8)
+    .append('path')
+    .attr('d', 'M-2,2 l4,-4 M0,8 l8,-8 M6,10 l4,-4')
+    .attr('stroke-width', '1')
+    .attr('stroke', "red") // red is a divergent color wrt viridis!
 
 // group layer for the map
 var mapLayer = svg.append('g')
@@ -58,6 +65,14 @@ var overlayText = function (d, g) {
         });
 }
 
+var highlightGraphLine = function (d) {
+    // highlight the corresponding line in the lineGraph!
+    var name = d.properties.name
+    d3.selectAll("path.lineplotelement")
+        .filter(function (d) { return d.key.valueOf() === name.valueOf(); })
+        .attr("class", "lineplotelement selected")
+}
+
 // mouseover event handler
 var mouseover = function (d) {
     // change the display of provinces on mouseover
@@ -72,14 +87,24 @@ var mouseover = function (d) {
 
         overlayText(d, g);
     }
+    else {
+        highlightGraphLine(d);
+    }
 }
 
 // mouseout event handler, counterpart of mouseover
 var mouseout = function (d) {
     d3.selectAll(".mouseOverText").remove()
+    d3.selectAll(".selected")
+        .attr("class", "lineplotelement")
+
     if (!selectedProvinceName.includes(d.properties.name)) {
         d3.select(this)
             .attr('class', '')
+    }
+    else {
+        d3.select(this)
+            .attr('class', 'clickedFill')
     }
 }
 
@@ -90,10 +115,17 @@ var clickThis = function (d) {
         d3.selectAll(".mouseOverText").remove()
         changeSelectedProvince(d, d.properties.name)
 
-        // provide another fill
+        // create a path clone for the striped overlay
+        d3.select(this).clone(true)
+            .attr("fill", "URL(#diagonalHatch)")
+            .attr("id", "diagonalHatch")
+            .attr('class', '')
+
+        // provide a clicked fill and notice we still have mouseover
         d3.select(this)
             .attr("class", "mouseover clickedFill")
-        // .attr("fill", function (d) { return colorGraph(d.properties.name) })
+            
+        highlightGraphLine(d);
 
         // provide province name with rectangle behind it for readability
         g = d3.select(this.parentNode).append('g')
@@ -105,6 +137,8 @@ var clickThis = function (d) {
         // in case the province clicker already was the selected province, we want to deselect it
         changeSelectedProvince(null, d.properties.name)
         d3.selectAll(".clickedText").remove()
+        d3.selectAll("path#diagonalHatch").remove()
+
         mapLayer.selectAll("path")
             .attr('class', '')
             .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
@@ -117,6 +151,10 @@ var clickThis = function (d) {
 function recolorMap() {
     mapLayer.selectAll("path")
         .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
+
+    // easiest to just redraw
+    mapLayer.selectAll("path#diagonalHatch")
+        .attr("fill", "URL(#diagonalHatch")
 }
 
 function redrawMap() {
@@ -126,7 +164,7 @@ function redrawMap() {
 
 // Load map data
 d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
-// d3.json('datasets/gemeentes.geojson', function (error, mapData) {
+    // d3.json('datasets/gemeentes.geojson', function (error, mapData) {
     var features = mapData.features;
 
     // draw each path into the mapLayer

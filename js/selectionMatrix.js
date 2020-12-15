@@ -1,7 +1,8 @@
 // file for the selection matrix
 
 // make a list of the data column names we want to assess, easy hardcoded solution for now
-indexList = ["Perioden", "Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen", "Inwoners15JaarOfOuder"];
+XindexList = ["Perioden", "Inwoners15JaarOfOuder"];
+YindexList = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
 
 // append the svg object to the body of the page, use same sizes as for linegraph
 var svgM = d3.select("#selectionMatrixContainer")
@@ -51,42 +52,43 @@ function fillDataSelectionMatrix(xData, yData, w, h) {
 }
 
 function buildSelectionMatrix() {
-    // Add background
-    svgM.append('rect')
-        .attr('width', width)
-        .attr('height', height)
-        .attr("fill", "#aaa")
-
     // spacing variable
     spacing = 10;
-    nr = indexList.length - 1;
+    nr = Math.max(XindexList.length,YindexList.length);
     w = (width - ((nr + 1) * spacing)) / nr
     h = (height - ((nr + 1) * spacing)) / nr
 
-    indexList.forEach(function (xData, ix) {
-        indexList.forEach(function (yData, iy) {
-            if (ix < iy) {
-                var datum = { "xData": xData, "yData": yData }
-                var x = w * (ix) + (ix + 1) * spacing
-                var y = h * (iy - 1) + (iy) * spacing
+    XindexList.forEach(function (xData, ix) {
+        YindexList.forEach(function (yData, iy) {
+            var datum = { "xData": xData, "yData": yData }
+            var x = w * (ix) + (ix + 1) * spacing
+            var y = h * (iy) + (iy) * spacing
 
-                rect = svgM.append("rect")
-                    .datum(datum)
-                    .attr("width", w)
-                    .attr("height", h)
-                    .attr('x', x)
-                    .attr('y', y)
-                    .attr("class", "matrixBlock")
-                    .on('click', clickSelectionMatrix)
+            // Add background
+            svgM.append('rect')
+                .attr("width", w + 2 * spacing)
+                .attr("height", h + 2 * spacing)
+                .attr('x', x - spacing)
+                .attr('y', y - spacing)
+                .attr("fill", "#aaa")
 
-                svg_rect = svgM.append("svg")
-                    .attr("width", w)
-                    .attr("height", h)
-                    .attr('x', x)
-                    .attr('y', y)
+            svgM.append("rect")
+                .datum(datum)
+                .attr("width", w)
+                .attr("height", h)
+                .attr('x', x)
+                .attr('y', y)
+                .attr("class", "matrixBlock")
+                .on('click', clickSelectionMatrix)
 
-                fillDataSelectionMatrix.call(svg_rect, xData, yData, w, h)
-            }
+            svg_rect = svgM.append("svg")
+                .attr("width", w)
+                .attr("height", h)
+                .attr('x', x)
+                .attr('y', y)
+
+            fillDataSelectionMatrix.call(svg_rect, xData, yData, w, h)
+
         });
     })
 }
