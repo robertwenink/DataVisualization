@@ -1,5 +1,6 @@
 .matrixBlock {
     fill:white;
+    align-items: center;
 }
 
 .matrixLine {

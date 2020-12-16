@@ -1,4 +1,4 @@
-var screenscaling = 1.0
+var screenscaling = 0.80
 
 var width = 735 * screenscaling,
     height = 840 * screenscaling,

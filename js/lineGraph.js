@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
-var margin = { top: 10, right: 30, bottom: 30, left: 70 },
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+var margin = { top: 10, right: 60, bottom: 30, left: 70 },
+    width = 450 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
 
 var x, y;
 var t = d3.transition()
@@ -18,6 +18,8 @@ var svg = d3.select("#lineGraphContainer")
 
 // Message indiciting axis could be selected.
 var message = svg.append("g")
+    .style("font-size", "1em")
+    .style("margin-bottom", "1em")
     .attr("class", "message")
 
 // this function initialises the lineGraph and read the data into the global sumstat!
@@ -150,7 +152,7 @@ function drawGraph() {
         .enter()
         .append("path")
         .attr("class", "lineplotelement")
-        // .filter(function(d){return selectedToPlot.includes(d.key)})
+        .filter(function(d){return selectedToPlot.includes(d.key)})
         .attr("stroke", function (d) { return colorGraph(d.key) })
         .on('mouseover', mouseoverGraph)
         .on("mouseout", mouseoutGraph)

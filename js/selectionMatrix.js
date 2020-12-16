@@ -1,40 +1,41 @@
 // file for the selection matrix
 
 // make a list of the data column names we want to assess, easy hardcoded solution for now
-XindexList = ["Perioden", "Inwoners15JaarOfOuder"];
-YindexList = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
+XindexList2 = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
+YindexList2 = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
 
 // append the svg object to the body of the page, use same sizes as for linegraph
 var svgM = d3.select("#selectionMatrixContainer")
     .append("svg")
+    .style("margin-left", 0)
+    .style("margin-top", 10)
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr('stroke', 'none')
     .attr("transform",
-        "translate(" + margin.left + "," + (margin.top) + ")");
+        "translate(" + 20 + "," + (margin.top) + ")");
 
-var g = svgM.append('g');
+var gM = svgM.append('g');
 
 function clickSelectionMatrix() {
-    data = d3.select(this).datum()
-    xData = data.xData
-    yData = data.yData
+    data2 = d3.select(this).datum()
+    xData2 = data2.xData
+    yData2 = data2.yData
 
     if (sumstat != undefined) {
-        redrawMap();
-        redrawLineGraph();
+        redrawScatterGraph();
     }
 }
 
-function fillDataSelectionMatrix(xData, yData, w, h) {
+function fillDataSelectionMatrix(xData2, yData2, w2, h2) {
     // create static plot for each selection svg/rect
-    x = d3.scaleLinear()
-        .domain(d3.extent(data_glob, function (d) { return +d[xData]; }))
-        .range([0, w]);
-    y = d3.scaleLinear()
-        .domain([0, d3.max(data_glob, function (d) { return +d[yData]; })])
-        .range([h, 0]);
+    x2 = d3.scaleLinear()
+        .domain(d3.extent(data_glob, function (d) { return +d[xData2]; }))
+        .range([0, w2]);
+    y2 = d3.scaleLinear()
+        .domain([0, d3.max(data_glob, function (d) { return +d[yData2]; })])
+        .range([h2, 0]);
     this.append("g")
         .selectAll(".matrixLine")
         .data(sumstat)
@@ -45,49 +46,49 @@ function fillDataSelectionMatrix(xData, yData, w, h) {
         .attr("stroke", function (d) { return colorGraph(d.key) })
         .attr("d", function (d) {
             return d3.line()
-                .x(function (d) { return x(d[xData]); })
-                .y(function (d) { return y(d[yData]); })
+                .x(function (d) { return x(d[xData2]); })
+                .y(function (d) { return y(d[yData2]); })
                 (d.values)
         })
 }
 
 function buildSelectionMatrix() {
     // spacing variable
-    spacing = 10;
-    nr = Math.max(XindexList.length,YindexList.length);
-    w = (width - ((nr + 1) * spacing)) / nr
-    h = (height - ((nr + 1) * spacing)) / nr
+    spacing2 = 10;
+    nr2 = Math.max(XindexList2.length,YindexList2.length);
+    w2 = (width2 - ((nr2 + 1) * spacing2)) / nr2
+    h2 = (height2 - ((nr2 + 1) * spacing2)) / nr2
 
-    XindexList.forEach(function (xData, ix) {
-        YindexList.forEach(function (yData, iy) {
-            var datum = { "xData": xData, "yData": yData }
-            var x = w * (ix) + (ix + 1) * spacing
-            var y = h * (iy) + (iy) * spacing
+    XindexList2.forEach(function (xData2, ix) {
+        YindexList2.forEach(function (yData2, iy) {
+            var datum = { "xData": xData2, "yData": yData2 }
+            var x2 = w2 * (ix) + (ix + 1) * spacing2
+            var y2 = h2 * (iy) + (iy) * spacing2
 
             // Add background
             svgM.append('rect')
-                .attr("width", w + 2 * spacing)
-                .attr("height", h + 2 * spacing)
-                .attr('x', x - spacing)
-                .attr('y', y - spacing)
+                .attr("width", w2 + 2 * spacing2)
+                .attr("height", h2 + 2 * spacing2)
+                .attr('x', x2 - spacing2)
+                .attr('y', y2 - spacing2)
                 .attr("fill", "#aaa")
 
             svgM.append("rect")
                 .datum(datum)
-                .attr("width", w)
-                .attr("height", h)
-                .attr('x', x)
-                .attr('y', y)
+                .attr("width", w2)
+                .attr("height", h2)
+                .attr('x', x2)
+                .attr('y', y2)
                 .attr("class", "matrixBlock")
                 .on('click', clickSelectionMatrix)
 
-            svg_rect = svgM.append("svg")
-                .attr("width", w)
-                .attr("height", h)
-                .attr('x', x)
-                .attr('y', y)
+            svg_rect2 = svgM.append("svg")
+                .attr("width", w2)
+                .attr("height", h2)
+                .attr('x', x2)
+                .attr('y', y2)
 
-            fillDataSelectionMatrix.call(svg_rect, xData, yData, w, h)
+            fillDataSelectionMatrix.call(svg_rect2, xData2, yData2, w2, h2)
 
         });
     })
