@@ -14,7 +14,7 @@ var svgMT = d3.select("#selectionMatrixTimeContainer")
     .append("g")
     .attr('stroke', 'none')
     .attr("transform",
-        "translate(" + 20 + "," + (margin.top) + ")");
+        "translate(" + margin.left + "," + (margin.top) + ")");
 
 var gT = svgMT.append('g');
 
@@ -26,10 +26,12 @@ function clickSelectionMatrixTime() {
     if (sumstat != undefined) {
         redrawMap();
         redrawLineGraph();
+        buildSelectionMatrix();
+        redrawScatterGraph();
     }
 }
 
-function fillDataSelectionMatrixTime(xData, yData, w, h) {
+function fillDataSelectionMatrixTime(xData, yData) {
     // create static plot for each selection svg/rect
     x = d3.scaleLinear()
         .domain(d3.extent(data_glob, function (d) { return +d[xData]; }))
@@ -55,9 +57,9 @@ function fillDataSelectionMatrixTime(xData, yData, w, h) {
 
 function buildSelectionMatrixTime() {
     // spacing variable
-    spacing = 10;
+    spacing = 15;
     nr = Math.max(Xindex.length,YindexList.length);
-    w = (width - ((nr + 1) * spacing)) / nr
+    w = (width - ((nr + 2) * spacing)) / nr
     h = (height - ((nr + 1) * spacing)) / nr
 
     Xindex.forEach(function (xData, ix) {
@@ -68,9 +70,9 @@ function buildSelectionMatrixTime() {
 
             // Add background
             svgMT.append('rect')
-                .attr("width", w + 2 * spacing)
+                .attr("width", w + 4 * spacing)
                 .attr("height", h + 2 * spacing)
-                .attr('x', x - spacing)
+                .attr('x', x - 2*spacing)
                 .attr('y', y - spacing)
                 .attr("fill", "#aaa")
 
@@ -83,13 +85,20 @@ function buildSelectionMatrixTime() {
                 .attr("class", "matrixBlock")
                 .on('click', clickSelectionMatrixTime)
 
+            svgMT.append("text")
+                .text(yData)
+                .attr('x', 0.5*w+spacing)
+                .attr('y', y)
+                .style("font-size", "8px")
+                .style("text-anchor", "middle")
+
             svg_rect = svgMT.append("svg")
                 .attr("width", w)
                 .attr("height", h)
                 .attr('x', x)
                 .attr('y', y)
 
-            fillDataSelectionMatrixTime.call(svg_rect, xData, yData, w, h)
+            fillDataSelectionMatrixTime.call(svg_rect, xData, yData)
 
         });
     })

@@ -7,6 +7,8 @@ var x2, y2, points;
 var t2 = d3.transition()
     .duration(500)
 
+var date = new Date(2019, 1)
+
 // append the svg object to the body of the page
 var svg2 = d3.select("#scatterGraphContainer")
     .append("svg")
@@ -34,7 +36,7 @@ function initScatter() {
 
     // Add Y axis
     y2 = d3.scaleLinear()
-        .domain([0, d3.max(data, function (d) { return +d[yData2]; })])
+        .domain([0, d3.max(data, function (d) { return +d[yData]; })])
         .range([height2, 0]);
     svg2.append("g")
         .attr("class", "yaxis")
@@ -72,19 +74,19 @@ function initScatter() {
         .attr("y", -53)
         .attr("x", -height2 / 2)
         .attr("transform", "rotate(-90)")
-        .text(yData2);
+        .text(yData);
 
 }
 
 
 function rescaleScatterAxis() {
   // set the new names
-  svg2.select(".ylabel").text(yData2)
+  svg2.select(".ylabel").text(yData)
   svg2.select(".xlabel").text(xData2)
 
   data = data_glob;
   y2 = d3.scaleLinear()
-      .domain([0, d3.max(data, function (d) { return +d[yData2]; })])
+      .domain([0, d3.max(data, function (d) { return +d[yData]; })])
       .range([height2, 0]);
 
   x2 = d3.scaleLinear()
@@ -113,7 +115,8 @@ function setTextScatter() {
       message2
           .append("text")
           .attr("class", "select-province-message")
-          .text("Currently selected province(s): " + selectedProvinceName)
+          .text("")
+          // .text("Currently selected province(s): " + selectedProvinceName)
   }
 }
 
@@ -122,7 +125,6 @@ function mouseoverScatter(d) {
   gg2 = d3.selectAll("path.clickedFill")
       .filter(function (d) { console.log(d.properties.name.valueOf() === name.valueOf()); return d.properties.name.valueOf() === name.valueOf(); })
       .attr("class", "mouseover")
-  console.log(gg2)
   if (gg2._groups[0].length > 0) {
       d3.select(this).attr("class", "selected")
   }
@@ -145,34 +147,17 @@ function drawScatter() {
   // reset lines
   d3.selectAll(".scatterplotelement").remove()
 
-  // svg2.selectAll(".scatterplotelement")
-  //     .data(data)
-  //     .attr("stroke", function (d) { return colorGraph(d.key) })
-  //     .on('mouseover', mouseoverScatter)
-  //     .on("mouseout", mouseoutScatter)
-  //     .transition(t2)
-  //     .enter().append("circle")
-  //     .attr("class", "dot")
-  //     .attr("cx", function(d) { return x2(d[v1]); })
-  //     .attr("cy", function(d) { return y2(d[v2]); });
 
-  // Draw ALL the lines now to enable transition later
   svg2.selectAll(".scatterplotelement")
-      .data(sumstat)
+      .data(data_glob)
       .enter()
-      .append("path")
-      .attr("class", "scatterplotelement")
-      .filter(function(d){return selectedToPlot.includes(d.key)})
-      .attr("stroke", function (d) { return colorGraph(d.key) })
-      .on('mouseover', mouseoverScatter)
-      .on("mouseout", mouseoutScatter)
-      .transition(t2)
-      .attr("d", function (d) {
-          return d3.line()
-              .x(function (d) { return x2(d[xData2]); })
-              .y(function (d) { return y2(d[yData2]); })
-              (d.values)
-      })
+      .filter(function(d){return selectedToPlot.includes(d.Toelichting) && date.getFullYear() == d.Perioden})
+        .append("circle")
+        .attr("cx", function (d) { return x2(d[xData2]); } )
+        .attr("cy", function (d) { return y2(d[yData]); } )
+        .attr("r", 2.5)
+        .style("fill", function (d) { return colorGraph(d.Toelichting) })
+        .attr("class", "scatterplotelement")
 
 }
 
@@ -180,28 +165,19 @@ function updateScatter() {
   setTextScatter();
 
   // redraw the lines with new data
-  svg.selectAll(".scatterplotelement")
-      .attr("stroke", "none")
+  svg2.selectAll(".scatterplotelement").remove();
   
-    // svg2.selectAll(".scatterplotelement")
-    //   .filter(function (d) { return selectedToPlot.includes(d.key) })
-    //   .transition(t2)
-    //   .attr("stroke", function (d) { return colorGraph(d.key) })
-    //   .enter().append("circle")
-    //     .attr("class", "dot")
-    //     .attr("cx", function(d) { return x2(d[xData2]); })
-    //     .attr("cy", function(d) { return y2(d[yData2]); })
-
-      svg2.selectAll(".scatterplotelement")
-      .filter(function (d) { return selectedToPlot.includes(d.key) })
-      .transition(t2)
-      .attr("stroke", function (d) { return colorGraph(d.key) })
-      .attr("d", function (d) {
-          return d3.line()
-              .x(function (d) { return x2(d[xData2]); })
-              .y(function (d) { return y2(d[yData2]); })
-              (d.values)
-      })
+  svg2.selectAll(".scatterplotelement")
+    .data(data_glob)
+    .enter()
+    .filter(function(d){return selectedToPlot.includes(d.Toelichting) && date.getFullYear() == d.Perioden})
+    // .transition(t2)
+      .append("circle")
+      .attr("cx", function (d) { return x2(d[xData2]); } )
+      .attr("cy", function (d) { return y2(d[yData]); } )
+      .attr("r", 2.5)
+      .style("fill", function (d) { return colorGraph(d.Toelichting) })
+      .attr("class", "scatterplotelement")
 
 }
 
@@ -209,5 +185,10 @@ function updateScatter() {
 // Update the scatter graph according to selected values.
 function redrawScatterGraph() {
   rescaleScatterAxis();
+  updateScatter();
+}
+
+function setScatterTime(date2) {
+  date = date2;
   updateScatter();
 }

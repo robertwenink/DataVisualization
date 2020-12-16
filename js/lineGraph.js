@@ -114,7 +114,8 @@ function setText() {
         message
             .append("text")
             .attr("class", "select-province-message")
-            .text("Currently selected province(s): " + selectedProvinceName)
+            .text("")
+            // .text("Currently selected province(s): " + selectedProvinceName)
     }
 }
 

@@ -7,6 +7,11 @@
     stroke-width: 1.5;
 }
 
+.scatterplotelement {
+    fill : none;
+    stroke-width: 1.5;
+}
+
 .selected {
     /* stroke: black; */
     fill : none;

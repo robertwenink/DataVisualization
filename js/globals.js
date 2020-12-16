@@ -23,9 +23,7 @@ if (showAverageNL) {
 var yData = "GemiddeldeVerkoopprijs";
 var xData = "Perioden";
 
-var yData2 = "GemiddeldeVerkoopprijs";
-var xData2 = "Perioden";
-
+var xData2 = "Woningvoorraad";
 
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;
@@ -67,7 +65,7 @@ function changeSelectedProvince(newSelectedProvince, newName) {
         selectedToPlot = selectedProvinceName;
     }
     redrawLineGraph();
-    // redrawScatterGraph();
+    redrawScatterGraph();
 }
 
 function loadData() {
@@ -81,9 +79,9 @@ function loadData() {
         setColorPalettes()
         initGraph()
         drawGraph()
-        redrawMap()
         initScatter()
         drawScatter()
+        redrawMap()
         buildSelectionMatrix()
         buildSelectionMatrixTime()
     })
