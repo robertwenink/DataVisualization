@@ -5,7 +5,7 @@
 var sumstat;
 var data_glob;
 
-var colorGraph, colorMap;
+var colorGraph, colorGraphSub, colorMap;
 var dataKeyHelperArray = ["Nederland", "Groningen", "Friesland", "Drenthe", "Overijssel", "Flevoland", "Gelderland", "Utrecht", "Noord-Holland", "Zuid-Holland", "Zeeland", "Noord-Brabant", "Limburg"];
 
 // Initialize selected axis and years used in both graphs.
@@ -24,6 +24,7 @@ var yData = "Housing Stock";
 var xData = "Perioden";
 var xData2 = "Price Index";
 
+// this was written at a point where javascript and the d3 datastructure was not yet fully understood and could probably be improved.
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;
     return v[v.length - 1][yData]; // de index hier kan eventueel afhankelijk worden gemaakt van jaargetal
@@ -32,7 +33,7 @@ function returnValuesOfPath(d) {
 function setColorPalettes() {
     // this palette is dependent on the categorical data i.e. the province names
     res = sumstat.map(function (d) { return d.key })
-    colorGraph = d3.scaleOrdinal()
+    colorGraphSub = d3.scaleOrdinal()
         .domain(res)
         .range(d3.schemePaired);
 
@@ -46,6 +47,16 @@ function setColorPalettes() {
     // add color to the map here, when we are sure of loaded data
     mapLayer.selectAll("path")
         .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
+}
+
+function colorGraph(name) {
+    // if and else statement to exclude the NL data from the categorical data of only size 12.
+    if (name == "Nederland" || name.includes("NL")){
+        return d3.rgb("ffffff")
+    }
+    else {
+        return colorGraphSub(name)
+    }
 }
 
 // Change the axis that is selected.
@@ -71,8 +82,8 @@ function changeSelectedProvince(newSelectedProvince, newName) {
 function mouseoverAll(RegionName) {
     // only the geo path has data structured with d.properties so use that to discern type
     d3.selectAll('path')
-        .filter(function(d){try { return d.properties.name.valueOf() === RegionName}catch{return 0}})
-        .attr("class","mouseover")
+        .filter(function (d) { try { return d.properties.name.valueOf() === RegionName } catch { return 0 } })
+        .attr("class", "mouseover")
 
     // highlight lineplot elements
     d3.selectAll("path.lineplotelement")
@@ -81,8 +92,8 @@ function mouseoverAll(RegionName) {
 
     // highlight scatterplot elements
     fill = d3.rgb(colorGraph(RegionName))
-    d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill,';"]'))
-        .attr("r", baseRadius*2)
+    d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill, ';"]'))
+        .attr("r", baseRadius * 2)
 }
 
 // to provide linked mouseout functionality
@@ -91,9 +102,9 @@ function mouseoutAll(RegionName) {
 
     // only the geo path has data structured with d.properties so use that to discern type
     d3.selectAll('path')
-    .filter(function(d){try { return d.properties.name.valueOf() === RegionName}catch{return 0}})
-    .attr("class","")
-    
+        .filter(function (d) { try { return d.properties.name.valueOf() === RegionName } catch { return 0 } })
+        .attr("class", "")
+
     // reset lineplot element
     d3.selectAll(".selectedElement")
         .filter(".lineplotelement")
@@ -101,7 +112,7 @@ function mouseoutAll(RegionName) {
 
     // reset scatterplot element
     fill = d3.rgb(colorGraph(RegionName))
-    d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill,';"]'))
+    d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill, ';"]'))
         .attr("r", baseRadius)
 }
 

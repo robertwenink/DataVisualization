@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
-var margin = { top: 10, right: 60, bottom: 30, left: 70 },
+var margin = { top: 10, right: 60, bottom: 40, left: 70 },
     width = 450 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    height = 310 - margin.top - margin.bottom;
 
 var x, y;
 var t = d3.transition()
@@ -36,7 +36,7 @@ function initGraph() {
 
     // Add Y axis
     y = d3.scaleLinear()
-        .domain([0, d3.max(data, function (d) { return +d[yData]; })])
+        .domain([Math.min(d3.min(data, function (d) { return +d[yData]; }),0), d3.max(data, function (d) { return +d[yData]; })])
         .range([height, 0]);
     svg.append("g")
         .attr("class", "yaxis")
@@ -64,7 +64,7 @@ function initGraph() {
         .attr("class", "xlabel label")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
-        .attr("y", height + 30)
+        .attr("y", height + 40)
         .text("Year");
 
     // add y-label
@@ -76,6 +76,7 @@ function initGraph() {
         .attr("transform", "rotate(-90)")
         .text(yData);
 
+    rescaleAxis() 
 }
 
 function rescaleAxis() {
@@ -99,6 +100,11 @@ function rescaleAxis() {
     svg.selectAll(".xaxis")
         .transition(t)
         .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("y", 3)
+        .attr("x", 5)
+        .attr("transform", "rotate(45)")
+        .style("text-anchor", "start");
 }
 
 function setText() {
@@ -169,8 +175,9 @@ function updateGraph() {
                 .y(function (d) { return y(d[yData]); })
                 (d.values)
         })
+        .filter(function(d){console.log(d.key.valueOf());return d.key.valueOf() === "Nederland"})
+        .style("stroke-dasharray", ("3, 3"))
 }
-
 
 // Update the line graph according to selected values.
 function redrawLineGraph() {

@@ -46,8 +46,11 @@ function fillDataSelectionMatrix(xData2, yData, w, h) {
         .selectAll(".matrixLine")
         .data(data_glob)
         .enter()
-        .filter(function (d) { return date.getFullYear() == d.Perioden })
+        // .filter(function (d) { return date.getFullYear() == d.Perioden })
+        // .filter(function(d){return d.Toelichting == "Nederland"})
+        .filter(function(d,i){return i%10 == 0})
         .append("circle")
+        .attr("class","matrixLine")
         .attr("cx", function (d) { return x(d[xData2]); })
         .attr("cy", function (d) { return y(d[yData]); })
         .attr("r", 2.5)
@@ -55,6 +58,9 @@ function fillDataSelectionMatrix(xData2, yData, w, h) {
 }
 
 function buildSelectionMatrix() {
+    // by far easiest to destroy the previous matrix on update, seen there is no interaction
+    svgM.selectAll("*").remove();
+
     // spacing variable
     spacing = 5;
     nr = Math.max(Xindex.length,YindexList.length);

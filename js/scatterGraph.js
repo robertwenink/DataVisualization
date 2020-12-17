@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
-var margin2 = { top: 10, right: 60, bottom: 30, left: 70 },
+var margin2 = { top: 10, right: 60, bottom: 50, left: 70 },
     width2 = 450 - margin2.left - margin2.right,
-    height2 = 300 - margin2.top - margin2.bottom;
+    height2 = 320 - margin2.top - margin2.bottom;
 
 var x2, y2, points;
 var t2 = d3.transition()
@@ -9,7 +9,8 @@ var t2 = d3.transition()
 
 var baseRadius = 4;
 
-var date = new Date(2019, 1)
+var dateUpper = endDate;
+var dateLower = startDate;
 
 // append the svg object to the body of the page
 var svg2 = d3.select("#scatterGraphContainer")
@@ -38,7 +39,7 @@ function initScatter() {
 
     // Add Y axis
     y2 = d3.scaleLinear()
-        .domain([0, d3.max(data, function (d) { return +d[yData]; })])
+        .domain([Math.min(d3.min(data, function (d) { return +d[yData]; }), 0), d3.max(data, function (d) { return +d[yData]; })])
         .range([height2, 0]);
     svg2.append("g")
         .attr("class", "yaxis")
@@ -66,7 +67,7 @@ function initScatter() {
         .attr("class", "xlabel label")
         .attr("text-anchor", "middle")
         .attr("x", width2 / 2)
-        .attr("y", height2 + 30)
+        .attr("y", height2 + 50)
         .text(xData2);
 
     // add y-label
@@ -78,6 +79,7 @@ function initScatter() {
         .attr("transform", "rotate(-90)")
         .text(yData);
 
+    rescaleScatterAxis()
 }
 
 
@@ -88,7 +90,7 @@ function rescaleScatterAxis() {
 
     data = data_glob;
     y2 = d3.scaleLinear()
-        .domain([0, d3.max(data, function (d) { return +d[yData]; })])
+        .domain([Math.min(d3.min(data, function (d) { return +d[yData]; }), 0), d3.max(data, function (d) { return +d[yData]; })])
         .range([height2, 0]);
 
     x2 = d3.scaleLinear()
@@ -102,6 +104,11 @@ function rescaleScatterAxis() {
     svg2.selectAll(".xaxis")
         .transition(t2)
         .call(d3.axisBottom(x2))
+        .selectAll("text")
+        .attr("y", 3)
+        .attr("x", 5)
+        .attr("transform", "rotate(45)")
+        .style("text-anchor", "start");
 }
 
 function setTextScatter() {
@@ -142,7 +149,7 @@ function drawScatter() {
         .on('mouseout', mouseoutScatter)
         .attr("class", "scatterplotelement")
         // .style("fill", function (d) { return colorGraph(d.Toelichting) })
-        .style("fill","none")
+        .style("fill", "none")
         .transition(t2)
         .attr("cx", function (d) { return x2(d[xData2]); })
         .attr("cy", function (d) { return y2(d[yData]); })
@@ -160,10 +167,10 @@ function updateScatter() {
         .style("fill", "none")
 
     // redraw the lines with new data  
-    console.log(date.getFullYear())
+    console.log(dateUpper.getFullYear())
     svg2.selectAll(".scatterplotelement")
-        .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && date.getFullYear() == d.Perioden) })
-        .style("fill", function (d) { return colorGraph(d.Toelichting)})
+        .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && dateUpper.getFullYear() == d.Perioden) })
+        .style("fill", function (d) { return colorGraph(d.Toelichting) })
         .attr("class", "scatterplotelement")
 
     // to make the non-selected/ non-shown move already as well!
@@ -181,6 +188,6 @@ function redrawScatterGraph() {
 }
 
 function setScatterTime(date2) {
-    date = date2;
+    dateUpper = date2;
     updateScatter();
 }

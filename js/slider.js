@@ -4,10 +4,10 @@ var marginSlider = { top: 10, right: 18, bottom: 15, left:18};
 var sliderTrackWidth = 360 - marginSlider.left - marginSlider.right;
 var sliderTrackHeight = 100 - marginSlider.top - marginSlider.bottom;
 
-var startDate = new Date(1995, 1);
+var startDate = new Date(1996, 1);
 var endDate = new Date(2020, 1);
 
-var date = endDate;
+var dateUpper = endDate;
 
 var formatDateIntoYear = d3.timeFormat("%Y");
 var formatDate = d3.timeFormat("%Y");
@@ -49,12 +49,10 @@ slider.insert("g", ".track-overlay")
         return formatDateIntoYear(d);
     })
 
-var selected = 1;
-
 // Changes the primary selected date. Can be edited via slider.
 function changeDates(newDate) {
-    date = new Date(newDate.getFullYear(), newDate.getMonth());
-    setScatterTime(date);
+    dateUpper = new Date(newDate.getFullYear(), newDate.getMonth());
+    setScatterTime(dateUpper);
 }
 
 // Insert first handle on the track.
@@ -69,7 +67,6 @@ var firstHandle = slider
             slider.interrupt();
         })
         .on("start drag", function() {
-            selected = 0;
             changeDates(x_s.invert(d3.event.x));
             d3.select(this)
                 .attr("cx", x_s(x_s.invert(d3.event.x)));
