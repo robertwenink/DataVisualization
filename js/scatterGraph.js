@@ -169,7 +169,7 @@ function updateScatter() {
     // redraw the lines with new data  
     console.log(dateUpper.getFullYear())
     svg2.selectAll(".scatterplotelement")
-        .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && dateUpper.getFullYear() == d.Perioden) })
+        .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && d.Perioden >= dateLower.getFullYear() && d.Perioden <= dateUpper.getFullYear()) })
         .style("fill", function (d) { return colorGraph(d.Toelichting) })
         .attr("class", "scatterplotelement")
 
@@ -187,7 +187,4 @@ function redrawScatterGraph() {
     updateScatter();
 }
 
-function setScatterTime(date2) {
-    dateUpper = date2;
-    updateScatter();
-}
+

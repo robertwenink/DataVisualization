@@ -4,7 +4,7 @@ var marginSlider = { top: 10, right: 18, bottom: 15, left:18};
 var sliderTrackWidth = 360 - marginSlider.left - marginSlider.right;
 var sliderTrackHeight = 100 - marginSlider.top - marginSlider.bottom;
 
-var startDate = new Date(1996, 1);
+var startDate = new Date(1995, 1);
 var endDate = new Date(2020, 1);
 
 var dateUpper = endDate;
@@ -50,16 +50,24 @@ slider.insert("g", ".track-overlay")
     })
 
 // Changes the primary selected date. Can be edited via slider.
-function changeDates(newDate) {
-    dateUpper = new Date(newDate.getFullYear(), newDate.getMonth());
-    setScatterTime(dateUpper);
+function changeDatesUpper(newUpperDate) {
+    // dateUpper is a variable used by the scatterGraph!
+    dateUpper = new Date(newUpperDate.getFullYear(), newUpperDate.getMonth());
+    updateScatter();
 }
 
-// Insert first handle on the track.
-var firstHandle = slider
+// Changes the primary selected date. Can be edited via slider.
+function changeDatesLower(newLowerDate) {
+    // dateLower is a variable used by the scatterGraph!
+    dateLower = new Date(newLowerDate.getFullYear(), newLowerDate.getMonth());
+    updateScatter();
+}
+
+// Insert upper handle on the track.
+var upperHandle = slider
     .insert("circle", ".track-overlay")
     .attr("class", "handle")
-    .attr("id", "firstHandle")
+    .attr("id", "upperHandle")
     .attr("r", sliderTrackWidth / (endDate.getFullYear() - startDate.getFullYear()))
     .attr("cx", x_s(endDate))
     .call(d3.drag()
@@ -67,22 +75,52 @@ var firstHandle = slider
             slider.interrupt();
         })
         .on("start drag", function() {
-            changeDates(x_s.invert(d3.event.x));
+            changeDatesUpper(x_s.invert(d3.event.x));
             d3.select(this)
                 .attr("cx", x_s(x_s.invert(d3.event.x)));
-            d3.select("#firstLabel")
+            d3.select("#upperLabel")
                 .attr("x", x_s(x_s.invert(d3.event.x)))
                 .text(formatDate(x_s.invert(d3.event.x)));
         }));
 
-// Insert first label on top of handle.
+// Insert lower handle on the track.
+var lowerHandle = slider
+    .insert("circle", ".track-overlay")
+    .attr("class", "handle")
+    .attr("id", "lowerHandle")
+    .attr("r", sliderTrackWidth / (endDate.getFullYear() - startDate.getFullYear()))
+    .attr("cx", x_s(startDate))
+    .call(d3.drag()
+        .on("start.interrupt", function() {
+            slider.interrupt();
+        })
+        .on("start drag", function() {
+            changeDatesLower(x_s.invert(d3.event.x));
+            d3.select(this)
+                .attr("cx", x_s(x_s.invert(d3.event.x)));
+            d3.select("#lowerLabel")
+                .attr("x", x_s(x_s.invert(d3.event.x)))
+                .text(formatDate(x_s.invert(d3.event.x)));
+        }));
+
+// Insert upper label on top of handle.
 var firstLabel = slider
     .append("text")
     .attr("class", "label")
-    .attr("id", "firstLabel")
+    .attr("id", "upperLabel")
     .attr("text-anchor", "middle")
     .attr("x", x_s(endDate))
     .text(formatDate(endDate))
+    .attr("transform", "translate(0," + (-25) + ")")
+
+// Insert lower label on top of handle.
+var firstLabel = slider
+    .append("text")
+    .attr("class", "label")
+    .attr("id", "lowerLabel")
+    .attr("text-anchor", "middle")
+    .attr("x", x_s(startDate))
+    .text(formatDate(startDate))
     .attr("transform", "translate(0," + (-25) + ")")
 
 // Insert label at the beginning of slider.
