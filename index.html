@@ -21,30 +21,33 @@
 <body>
     <h1 id="title">Housing prices in the Netherlands</h1>
     <h2 id="subtitle">Classical macro-economics: The relation of asset scarceness and price</h2>
-    <!-- <div id="container">
-        <div id="selectionUI">
-            yAxis:
-            <select id="yAxisItem" onchange="selectVariable(0)">
-                <option value="GemiddeldeVerkoopprijs" selected="selected">GemiddeldeVerkoopprijs</option>
-                <option value="PrijsindexVerkoopprijzen">PrijsindexVerkoopprijzen</option>
-                <option value="Woningvoorraad">Woningvoorraad</option>
-                <option value="Toevoeging">Toevoeging</option>
-                <option value="VerkochteWoningen">VerkochteWoningen</option>
-                <option value="TotaleWaardeVerkoopprijzen">TotaleWaardeVerkoopprijzen</option>
-            </select>
+    <div class="container" id="container">
+        <div class="mapContainer" id="mapContainer"></div>
+        <div class="list" id="list">
+            <h3 id="subsubtitle1">Time series</h3>
+            <div class="matrixMapContainer" id="matrixMapContainer">
+                <div class="selectionMatrixTimeContainer" id="selectionMatrixTimeContainer"></div>
+                <div class="lineGraphContainer" id="lineGraphContainer"></div>
+            </div>
+            <h3 id="subsubtitle2">Correlation</h3>
+            <div class="matrixMapContainer" id="matrixMapContainer2">
+                <div class="list" id="list2">
+                    <div class="selectionMatrixContainer" id="selectionMatrixContainer"></div>
+                    <div id="slider"></div>
+                </div>
+                <div class="scatterGraphContainer" id="scatterGraphContainer"></div>
+            </div>
         </div>
-    </div> -->
-    <div id="slider"></div>
-    <div id="mapContainer"></div>
-    <div id="lineGraphContainer"></div>
-    <div id="selectionMatrixContainer"></div>
+    </div>
 
     <!-- Load own js files -->
     <script src="js/map.js"></script>
     <script src="js/lineGraph.js"></script>
+    <script src="js/scatterGraph.js"></script>
+    <script src="js/selectionMatrixTime.js"></script>
     <script src="js/selectionMatrix.js"></script>
     <script src="js/globals.js"></script>
-    <!-- <script src="js/slider.js"></script> -->
+    <script src="js/slider.js"></script>
 </body>
 
 

@@ -20,12 +20,13 @@ if (showAverageNL) {
 }
 
 // initial names of the x and y Data to display
-var yData = "GemiddeldeVerkoopprijs"
-var xData = "Perioden"
+var yData = "Housing Stock";
+var xData = "Perioden";
+var xData2 = "Price Index";
 
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;
-    return v[v.length-1][yData] // de index hier kan afhankelijk worden gemaakt van jaargetal!!
+    return v[v.length-1][yData]; // de index hier kan afhankelijk worden gemaakt van jaargetal!!
 }
 
 function setColorPalettes() {
@@ -63,6 +64,7 @@ function changeSelectedProvince(newSelectedProvince, newName) {
         selectedToPlot = selectedProvinceName;
     }
     redrawLineGraph();
+    redrawScatterGraph();
 }
 
 function loadData() {
@@ -76,8 +78,11 @@ function loadData() {
         setColorPalettes()
         initGraph()
         drawGraph()
+        initScatter()
+        drawScatter()
         redrawMap()
         buildSelectionMatrix()
+        buildSelectionMatrixTime()
     })
 }
 

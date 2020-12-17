@@ -1,22 +1,25 @@
 // Set margins of slider SVG.
-var sliderSVGMargin = {
-    top: 0,
-    right: 50,
-    bottom: 0,
-    left: 50
-};
+var marginSlider = { top: 10, right: 18, bottom: 15, left:18};
 
-var sliderTrackWidth = 750 - sliderSVGMargin.left - sliderSVGMargin.right;
-var sliderTrackHeight = 70 - sliderSVGMargin.top - sliderSVGMargin.bottom;
+var sliderTrackWidth = 360 - marginSlider.left - marginSlider.right;
+var sliderTrackHeight = 100 - marginSlider.top - marginSlider.bottom;
 
-var sliderSVG = d3v4.select("#slider")
+var startDate = new Date(1996, 1);
+var endDate = new Date(2019, 1);
+
+var date = endDate;
+
+var formatDateIntoYear = d3.timeFormat("%Y");
+var formatDate = d3.timeFormat("%Y");
+
+var sliderSVG = d3.select("#slider")
+
     .append("svg")
-    .attr("width",
-        sliderTrackWidth + sliderSVGMargin.left + sliderSVGMargin.right)
+    .attr("width", sliderTrackWidth + marginSlider.left + marginSlider.right)
     .attr("height", sliderTrackHeight);
 
 // Function coupling the dates to slider track.
-var x = d3v4.scaleTime()
+var x_s = d3.scaleTime()
     .domain([startDate, endDate])
     .range([0, sliderTrackWidth])
     .clamp(true);
@@ -24,23 +27,23 @@ var x = d3v4.scaleTime()
 // Initialize slider class.
 var slider = sliderSVG.append("g")
     .attr("class", "slider")
-    .attr("transform", "translate(" + sliderSVGMargin.left + "," + sliderTrackHeight / 2 + ")");
+    .attr("transform", "translate(" + marginSlider.left + "," + sliderTrackHeight/2 + ")");
 
 // Insert slider track.
 slider.append("line")
     .attr("class", "track")
-    .attr("x1", x.range()[0])
-    .attr("x2", x.range()[1])
+    .attr("x1", x_s.range()[0])
+    .attr("x2", x_s.range()[1])
 
 // Insert ticks underneath slider track.
 slider.insert("g", ".track-overlay")
     .attr("class", "ticks")
     .attr("transform", "translate(0," + 18 + ")")
     .selectAll("text")
-    .data(x.ticks(15))
+    .data(x_s.ticks(15))
     .enter()
     .append("text")
-    .attr("x", x)
+    .attr("x", x_s)
     .attr("y", 10)
     .attr("text-anchor", "middle")
     .text(function(d) {
@@ -49,66 +52,32 @@ slider.insert("g", ".track-overlay")
 
 var selected = 1;
 
+// Changes the primary selected date. Can be edited via slider.
+function changeDates(newDate) {
+    date = new Date(newDate.getFullYear(), newDate.getMonth());
+    setScatterTime(date);
+}
+
 // Insert first handle on the track.
 var firstHandle = slider
     .insert("circle", ".track-overlay")
     .attr("class", "handle")
     .attr("id", "firstHandle")
     .attr("r", sliderTrackWidth / (endDate.getFullYear() - startDate.getFullYear()))
-    .attr("cx", x(startDate))
-    .style("fill", secondaryColor)
-    .call(d3v4.drag()
+    .attr("cx", x_s(endDate))
+    .call(d3.drag()
         .on("start.interrupt", function() {
             slider.interrupt();
         })
         .on("start drag", function() {
             selected = 0;
-            changeDates(
-                x.invert(d3v4.event.x), x.invert(d3.select("#secondHandle").attr("cx")));
-            d3.select("#secondHandle").style("fill", secondaryColor);
+            changeDates(x_s.invert(d3.event.x));
             d3.select(this)
-                .style("fill", primaryColor)
-                .attr("cx", x(x.invert(d3v4.event.x)));
+                .attr("cx", x_s(x_s.invert(d3.event.x)));
             d3.select("#firstLabel")
-                .attr("x", x(x.invert(d3v4.event.x)))
-                .text(formatDate(x.invert(d3v4.event.x)));
+                .attr("x", x_s(x_s.invert(d3.event.x)))
+                .text(formatDate(x_s.invert(d3.event.x)));
         }));
-
-// Insert second handle on the track.
-var secondHandle = slider
-    .insert("circle", ".track-overlay")
-    .attr("class", "handle")
-    .attr("id", "secondHandle")
-    .attr("r", sliderTrackWidth / (endDate.getFullYear() - startDate.getFullYear()))
-    .attr("cx", x(endDate))
-    .style("fill", primaryColor)
-    .call(d3v4.drag()
-        .on("start.interrupt", function() {
-            slider.interrupt();
-        })
-        .on("start drag", function() {
-            selected = 1;
-            changeDates(
-                x.invert(d3v4.event.x), x.invert(d3.select("#firstHandle").attr("cx")));
-            d3.select(this)
-                .style("fill", primaryColor)
-                .attr("cx", x(x.invert(d3v4.event.x)));
-            d3.select("#firstHandle").style("fill", secondaryColor);
-            d3.select("#secondLabel")
-                .attr("x", x(x.invert(d3v4.event.x)))
-                .text(formatDate(x.invert(d3v4.event.x)));
-        }));
-
-//Update color of secondhandle when mode is changed.        
-function updateSlider() {
-    if (selected == 1) {
-        slider.selectAll("#secondHandle")
-            .style("fill", primaryColor)
-    } else {
-        slider.selectAll("#firstHandle")
-            .style("fill", primaryColor)
-    }
-}
 
 // Insert first label on top of handle.
 var firstLabel = slider
@@ -116,16 +85,24 @@ var firstLabel = slider
     .attr("class", "label")
     .attr("id", "firstLabel")
     .attr("text-anchor", "middle")
-    .attr("x", x(startDate))
-    .text(formatDate(startDate))
-    .attr("transform", "translate(0," + (-25) + ")")
-
-// Insert second label on top of handle.
-var secondLabel = slider
-    .append("text")
-    .attr("class", "label")
-    .attr("id", "secondLabel")
-    .attr("text-anchor", "middle")
-    .attr("x", x(endDate))
+    .attr("x", x_s(endDate))
     .text(formatDate(endDate))
     .attr("transform", "translate(0," + (-25) + ")")
+
+// Insert label at the beginning of slider.
+slider.append("text")
+        .attr("class", "label")
+        .attr("id", "startLabel")
+        .attr("text-anchor", "middle")
+        .attr("x", x_s(startDate))
+        .text(formatDate(startDate))
+        .attr("transform", "translate(0," + (-25) + ")")
+
+// Insert label at the end of slider.
+slider.append("text")
+        .attr("class", "label")
+        .attr("id", "endLabel")
+        .attr("text-anchor", "middle")
+        .attr("x", x_s(endDate))
+        .text(formatDate(endDate))
+        .attr("transform", "translate(0," + (-25) + ")")

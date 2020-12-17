@@ -1,4 +1,4 @@
-var screenscaling = 1.0
+var screenscaling = 0.80
 
 var width = 735 * screenscaling,
     height = 840 * screenscaling,
@@ -71,6 +71,10 @@ var highlightGraphLine = function (d) {
     d3.selectAll("path.lineplotelement")
         .filter(function (d) { return d.key.valueOf() === name.valueOf(); })
         .attr("class", "lineplotelement selected")
+    d3.selectAll("path.scatterplotelement")
+        .filter(function (d) { return d.key.valueOf() === name.valueOf(); })
+        .attr("class", "scatterplotelement selected")
+
 }
 
 // mouseover event handler
@@ -97,6 +101,8 @@ var mouseout = function (d) {
     d3.selectAll(".mouseOverText").remove()
     d3.selectAll(".selected")
         .attr("class", "lineplotelement")
+    d3.selectAll(".selected")
+        .attr("class", "scatterplotelement")
 
     if (!selectedProvinceName.includes(d.properties.name)) {
         d3.select(this)
