@@ -2,7 +2,7 @@
 
 // make a list of the data column names we want to assess, easy hardcoded solution for now
 Xindex = ["Perioden"];
-YindexList = ["Housing Stock", "Stock Increase", "Price Index", "Houses Sold%", "Average Price", "Total Value Sold"];
+YindexList = ["Housing Stock", "Stock Increase", "Price Index [-]", "Houses Sold [%]", "Average Price", "Total Value Sold"];
 // YindexList = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
 
 // append the svg object to the body of the page, use same sizes as for linegraph
@@ -93,7 +93,7 @@ function buildSelectionMatrixTime() {
 
             // Add data label text
             svgMT.append("text")
-                .text(yData)
+                .text(getUnitsFullText(yData))
                 .attr('x', x - 3*spacing)
                 .attr('y', y+h/2 + 6)
                 .style("font-size", "12px")

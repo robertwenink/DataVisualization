@@ -68,7 +68,7 @@ function initScatter() {
         .attr("text-anchor", "middle")
         .attr("x", width2 / 2)
         .attr("y", height2 + 50)
-        .text(xData2);
+        .text(getUnitsFullText(xData2));
 
     // add y-label
     svg2.append("text")
@@ -77,7 +77,7 @@ function initScatter() {
         .attr("y", -53)
         .attr("x", -height2 / 2)
         .attr("transform", "rotate(-90)")
-        .text(yData);
+        .text(getUnitsFullText(yData));
 
     rescaleScatterAxis()
 }
@@ -85,8 +85,8 @@ function initScatter() {
 
 function rescaleScatterAxis() {
     // set the new names
-    svg2.select(".ylabel").text(yData)
-    svg2.select(".xlabel").text(xData2)
+    svg2.select(".ylabel").text(getUnitsFullText(yData))
+    svg2.select(".xlabel").text(getUnitsFullText(xData2))
 
     data = data_glob;
     y2 = d3.scaleLinear()
@@ -167,13 +167,13 @@ function updateScatter() {
         .style("fill", "none")
 
     // redraw the lines with new data  
-    console.log(dateUpper.getFullYear())
     svg2.selectAll(".scatterplotelement")
-        .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && d.Perioden >= dateLower.getFullYear() && d.Perioden <= dateUpper.getFullYear()) })
+        .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && d.Perioden >= dateLower.getFullYear() && d.Perioden <= dateUpper.getFullYear() && d.Perioden%1==0) })
         .style("fill", function (d) { return colorGraph(d.Toelichting) })
+        .style("fill-opacity", function (d) {return (0.2+0.8*((d.Perioden-dateLower.getFullYear())/(dateUpper.getFullYear()-dateLower.getFullYear()))**3)})
         .attr("class", "scatterplotelement")
 
-    // to make the non-selected/ non-shown move already as well!
+    // to make the non-selected/ non-shown move already as well! looks better for the scatterplot
     svg2.selectAll(".scatterplotelement")
         .transition(t2)
         .attr("cx", function (d) { return x2(d[xData2]); })

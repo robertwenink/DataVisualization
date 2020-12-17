@@ -22,12 +22,19 @@ if (showAverageNL) {
 // initial names of the x and y Data to display
 var yData = "Housing Stock";
 var xData = "Perioden";
-var xData2 = "Price Index";
+var xData2 = "Price Index [-]";
 
 // this was written at a point where javascript and the d3 datastructure was not yet fully understood and could probably be improved.
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;
     return v[v.length - 1][yData]; // de index hier kan eventueel afhankelijk worden gemaakt van jaargetal
+}
+
+function getUnitsFullText(textdata){
+    if (textdata == "Average Price" || textdata == "Total Value Sold"){
+        textdata = textdata.concat(" [€]")
+    }
+    return textdata
 }
 
 function setColorPalettes() {

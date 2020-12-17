@@ -74,14 +74,14 @@ function initGraph() {
         .attr("y", -53)
         .attr("x", -height / 2)
         .attr("transform", "rotate(-90)")
-        .text(yData);
+        .text(getUnitsFullText(yData));
 
     rescaleAxis() 
 }
 
 function rescaleAxis() {
     // set the new names
-    d3.select(".ylabel").text(yData)
+    d3.select(".ylabel").text(getUnitsFullText(yData))
     // d3.select(".xlabel").text("Year")
 
     data = data_glob;

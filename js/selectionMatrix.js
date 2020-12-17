@@ -1,11 +1,11 @@
 // file for the selection matrix
 
-var marginSM = { top: 10, right: 5, bottom: 20, left: 25 },
+var marginSM = { top: 10, right: 5, bottom: 40, left: 25 },
     widthSM = 360 - marginSM.left - marginSM.right,
-    heightSM = 340 - marginSM.top - marginSM.bottom;
+    heightSM = 360 - marginSM.top - marginSM.bottom;
 
 // make a list of the data column names we want to assess, easy hardcoded solution for now
-XindexList2 = ["Housing Stock", "Stock Increase", "Price Index", "Houses Sold%", "Average Price", "Total Value Sold"];
+XindexList2 = ["Housing Stock", "Stock Increase", "Price Index [-]", "Houses Sold [%]", "Average Price", "Total Value Sold"];
 // XindexList2 = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
 
 // append the svg object to the body of the page, use same sizes as for linegraph
@@ -48,9 +48,9 @@ function fillDataSelectionMatrix(xData2, yData, w, h) {
         .enter()
         // .filter(function (d) { return date.getFullYear() == d.Perioden })
         // .filter(function(d){return d.Toelichting == "Nederland"})
-        .filter(function(d,i){return i%10 == 0})
+        .filter(function (d, i) { return i % 10 == 0 })
         .append("circle")
-        .attr("class","matrixLine")
+        .attr("class", "matrixLine")
         .attr("cx", function (d) { return x(d[xData2]); })
         .attr("cy", function (d) { return y(d[yData]); })
         .attr("r", 2.5)
@@ -63,16 +63,16 @@ function buildSelectionMatrix() {
 
     // spacing variable
     spacing = 5;
-    nr = Math.max(Xindex.length,YindexList.length);
+    nr = Math.max(Xindex.length, YindexList.length);
     w2 = (widthSM - ((nr + 2) * spacing)) / nr
     h2 = (heightSM - ((nr + 1) * spacing)) / nr
-    w = Math.min(w2,h2)
-    h = Math.min(w2,h2)
+    w = Math.min(w2, h2)
+    h = Math.min(w2, h2)
 
     XindexList2.forEach(function (xData2, ix) {
-        var datum = { "xData": xData2, "yData": yData }
         var x = w * (ix) + (ix + 1) * spacing
         var y = 0
+        var datum = { "xData": xData2, "yData": yData }
 
         // Add background
         svgM.append('rect')
@@ -92,14 +92,14 @@ function buildSelectionMatrix() {
             .attr("class", "matrixBlock")
             .on('click', clickSelectionMatrix)
 
+        //add text
         gg = svgM.append("g")
-            .attr("transform", "translate(".concat(x+w/2+12.5,",",y+h+2*spacing,") rotate(-45)"))
+            .attr("transform", "translate(".concat(x + w / 2 + 12.5, ",", y + h + 2 * spacing, ") rotate(-45)"))
 
         gg.append("text")
-            .text(xData2)
+            .text(getUnitsFullText(xData2))
             .style("font-size", "12px")
             .style("text-anchor", "end")
-
 
         // append the graph svg
         svg_rect2 = svgM.append("svg")
