@@ -20,10 +20,9 @@ if (showAverageNL) {
 }
 
 // initial names of the x and y Data to display
-var yData = "GemiddeldeVerkoopprijs";
+var yData = "Housing Stock";
 var xData = "Perioden";
-
-var xData2 = "Woningvoorraad";
+var xData2 = "Price Index";
 
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;

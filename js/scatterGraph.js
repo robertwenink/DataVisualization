@@ -145,7 +145,7 @@ function drawScatter() {
   setTextScatter();
 
   // reset lines
-  d3.selectAll(".scatterplotelement").remove()
+  svg2.selectAll(".scatterplotelement").remove()
 
 
   svg2.selectAll(".scatterplotelement")
@@ -155,7 +155,7 @@ function drawScatter() {
         .append("circle")
         .attr("cx", function (d) { return x2(d[xData2]); } )
         .attr("cy", function (d) { return y2(d[yData]); } )
-        .attr("r", 2.5)
+        .attr("r", 4)
         .style("fill", function (d) { return colorGraph(d.Toelichting) })
         .attr("class", "scatterplotelement")
 
@@ -175,7 +175,7 @@ function updateScatter() {
       .append("circle")
       .attr("cx", function (d) { return x2(d[xData2]); } )
       .attr("cy", function (d) { return y2(d[yData]); } )
-      .attr("r", 2.5)
+      .attr("r", 4)
       .style("fill", function (d) { return colorGraph(d.Toelichting) })
       .attr("class", "scatterplotelement")
 

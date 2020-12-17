@@ -2,14 +2,15 @@
 
 // make a list of the data column names we want to assess, easy hardcoded solution for now
 Xindex = ["Perioden"];
-YindexList = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
+YindexList = ["Housing Stock", "Stock Increase", "Price Index", "Houses Sold", "Average Price", "Total Value Sold"];
+// YindexList = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
 
 // append the svg object to the body of the page, use same sizes as for linegraph
 var svgMT = d3.select("#selectionMatrixTimeContainer")
     .append("svg")
     .style("margin-left", 0)
     .style("margin-top", 10)
-    .attr("width", width + margin.left + margin.right)
+    .attr("width", 390 + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr('stroke', 'none')
@@ -24,6 +25,8 @@ function clickSelectionMatrixTime() {
     yData = data.yData
 
     if (sumstat != undefined) {
+        svgMT.selectAll(".matrixBlock").style("stroke", "none")
+        d3.select(this).style("stroke", "black").style("stroke-width", 3)
         redrawMap();
         redrawLineGraph();
         buildSelectionMatrix();
@@ -88,8 +91,8 @@ function buildSelectionMatrixTime() {
             svgMT.append("text")
                 .text(yData)
                 .attr('x', 0.5*w+spacing)
-                .attr('y', y)
-                .style("font-size", "8px")
+                .attr('y', y-3)
+                .style("font-size", "9px")
                 .style("text-anchor", "middle")
 
             svg_rect = svgMT.append("svg")

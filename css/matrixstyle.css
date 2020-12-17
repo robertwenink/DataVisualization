@@ -1,6 +1,14 @@
 .matrixBlock {
     fill:white;
     align-items: center;
+    stroke: none;
+}
+
+.selected {
+    stroke: black;
+    stroke-width: 3;
+    transition: fill-opacity .4s;
+    transition: stroke .4s;
 }
 
 .matrixLine {

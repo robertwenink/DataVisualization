@@ -1,10 +1,10 @@
 // Set margins of slider SVG.
-var marginSlider = { top: 10, right: 15, bottom: 15, left:15};
+var marginSlider = { top: 10, right: 18, bottom: 15, left:18};
 
-var sliderTrackWidth = 400 - marginSlider.left - marginSlider.right;
+var sliderTrackWidth = 360 - marginSlider.left - marginSlider.right;
 var sliderTrackHeight = 100 - marginSlider.top - marginSlider.bottom;
 
-var startDate = new Date(1995, 10);
+var startDate = new Date(1996, 1);
 var endDate = new Date(2019, 1);
 
 var date = endDate;
@@ -89,12 +89,20 @@ var firstLabel = slider
     .text(formatDate(endDate))
     .attr("transform", "translate(0," + (-25) + ")")
 
-// // Insert second label on top of handle.
-// var secondLabel = slider
-//     .append("text")
-//     .attr("class", "label")
-//     .attr("id", "secondLabel")
-//     .attr("text-anchor", "middle")
-//     .attr("x", x_s(endDate))
-//     .text(formatDate(endDate))
-//     .attr("transform", "translate(0," + (-25) + ")")
+// Insert label at the beginning of slider.
+slider.append("text")
+        .attr("class", "label")
+        .attr("id", "startLabel")
+        .attr("text-anchor", "middle")
+        .attr("x", x_s(startDate))
+        .text(formatDate(startDate))
+        .attr("transform", "translate(0," + (-25) + ")")
+
+// Insert label at the end of slider.
+slider.append("text")
+        .attr("class", "label")
+        .attr("id", "endLabel")
+        .attr("text-anchor", "middle")
+        .attr("x", x_s(endDate))
+        .text(formatDate(endDate))
+        .attr("transform", "translate(0," + (-25) + ")")

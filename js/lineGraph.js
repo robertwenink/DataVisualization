@@ -65,7 +65,7 @@ function initGraph() {
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
         .attr("y", height + 30)
-        .text("Perioden");
+        .text("Year");
 
     // add y-label
     svg.append("text")
@@ -81,7 +81,7 @@ function initGraph() {
 function rescaleAxis() {
     // set the new names
     d3.select(".ylabel").text(yData)
-    d3.select(".xlabel").text(xData)
+    // d3.select(".xlabel").text("Year")
 
     data = data_glob;
     y = d3.scaleLinear()
