@@ -2,14 +2,14 @@
 
 // make a list of the data column names we want to assess, easy hardcoded solution for now
 Xindex = ["Perioden"];
-YindexList = ["Housing Stock", "Stock Increase", "Price Index", "Houses Sold", "Average Price", "Total Value Sold"];
+YindexList = ["Housing Stock", "Stock Increase", "Price Index", "Houses Sold%", "Average Price", "Total Value Sold"];
 // YindexList = ["Woningvoorraad", "VerkochteWoningen", "GemiddeldeVerkoopprijs", "TotaleWaardeVerkoopprijzen"];
 
 // append the svg object to the body of the page, use same sizes as for linegraph
 var svgMT = d3.select("#selectionMatrixTimeContainer")
     .append("svg")
     .style("margin-left", 0)
-    .style("margin-top", 10)
+    .style("margin-top", 5)
     .attr("width", 390 + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -60,25 +60,28 @@ function fillDataSelectionMatrixTime(xData, yData) {
 
 function buildSelectionMatrixTime() {
     // spacing variable
-    spacing = 15;
+    spacing = 5;
     nr = Math.max(Xindex.length,YindexList.length);
-    w = (width - ((nr + 2) * spacing)) / nr
-    h = (height - ((nr + 1) * spacing)) / nr
+    w2 = (width) / nr
+    h2 = (height) / nr
+    w = Math.min(w2,h2)
+    h = Math.min(w2,h2)
 
     Xindex.forEach(function (xData, ix) {
         YindexList.forEach(function (yData, iy) {
             var datum = { "xData": xData, "yData": yData }
-            var x = w * (ix) + (ix + 1) * spacing
+            var x = w * (ix) + (ix + 1) * spacing + width/2
             var y = h * (iy) + (iy) * spacing
 
-            // Add background
+            // Add encapsulating background
             svgMT.append('rect')
-                .attr("width", w + 4 * spacing)
+                .attr("width", w + 2 * spacing)
                 .attr("height", h + 2 * spacing)
-                .attr('x', x - 2*spacing)
-                .attr('y', y - spacing)
+                .attr('x', x - 1*spacing)
+                .attr('y', y - 1*spacing)
                 .attr("fill", "#aaa")
-
+            
+            // add graph background
             svgMT.append("rect")
                 .datum(datum)
                 .attr("width", w)
@@ -88,13 +91,15 @@ function buildSelectionMatrixTime() {
                 .attr("class", "matrixBlock")
                 .on('click', clickSelectionMatrixTime)
 
+            // Add data label text
             svgMT.append("text")
                 .text(yData)
-                .attr('x', 0.5*w+spacing)
-                .attr('y', y-3)
-                .style("font-size", "9px")
-                .style("text-anchor", "middle")
-
+                .attr('x', x - 3*spacing)
+                .attr('y', y+h/2 + 6)
+                .style("font-size", "12px")
+                .style("text-anchor", "end")
+            
+            // append the graph svg
             svg_rect = svgMT.append("svg")
                 .attr("width", w)
                 .attr("height", h)

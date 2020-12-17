@@ -7,6 +7,8 @@ var x2, y2, points;
 var t2 = d3.transition()
     .duration(500)
 
+var baseRadius = 4;
+
 var date = new Date(2019, 1)
 
 // append the svg object to the body of the page
@@ -80,115 +82,105 @@ function initScatter() {
 
 
 function rescaleScatterAxis() {
-  // set the new names
-  svg2.select(".ylabel").text(yData)
-  svg2.select(".xlabel").text(xData2)
+    // set the new names
+    svg2.select(".ylabel").text(yData)
+    svg2.select(".xlabel").text(xData2)
 
-  data = data_glob;
-  y2 = d3.scaleLinear()
-      .domain([0, d3.max(data, function (d) { return +d[yData]; })])
-      .range([height2, 0]);
+    data = data_glob;
+    y2 = d3.scaleLinear()
+        .domain([0, d3.max(data, function (d) { return +d[yData]; })])
+        .range([height2, 0]);
 
-  x2 = d3.scaleLinear()
-      .domain(d3.extent(data, function (d) { return +d[xData2]; }))
-      .range([0, width2]);
+    x2 = d3.scaleLinear()
+        .domain(d3.extent(data, function (d) { return +d[xData2]; }))
+        .range([0, width2]);
 
-  svg2.selectAll(".yaxis")
-      .transition(t2)
-      .call(d3.axisLeft(y2))
+    svg2.selectAll(".yaxis")
+        .transition(t2)
+        .call(d3.axisLeft(y2))
 
-  svg2.selectAll(".xaxis")
-      .transition(t2)
-      .call(d3.axisBottom(x2))
+    svg2.selectAll(".xaxis")
+        .transition(t2)
+        .call(d3.axisBottom(x2))
 }
 
 function setTextScatter() {
-  // reset DOM elements first
-  message2.selectAll(".select-province-message").remove()
-  if (selectedProvinceName.length == 0) {
-      // Show a message suggesting an axis could be selected.
-      message2
-          .append("text")
-          .attr("class", "select-province-message")
-          .text("Click on province for detailed display.")
-  } else {
-      message2
-          .append("text")
-          .attr("class", "select-province-message")
-          .text("")
-          // .text("Currently selected province(s): " + selectedProvinceName)
-  }
+    // reset DOM elements first
+    message2.selectAll(".select-province-message").remove()
+    if (selectedProvinceName.length == 0) {
+        // Show a message suggesting an axis could be selected.
+        message2
+            .append("text")
+            .attr("class", "select-province-message")
+            .text("Click on province for detailed display.")
+    } else {
+        message2
+            .append("text")
+            .attr("class", "select-province-message")
+            .text("")
+        // .text("Currently selected province(s): " + selectedProvinceName)
+    }
 }
 
 function mouseoverScatter(d) {
-  var name = d.key
-  gg2 = d3.selectAll("path.clickedFill")
-      .filter(function (d) { console.log(d.properties.name.valueOf() === name.valueOf()); return d.properties.name.valueOf() === name.valueOf(); })
-      .attr("class", "mouseover")
-  if (gg2._groups[0].length > 0) {
-      d3.select(this).attr("class", "selected")
-  }
+    mouseoverAll(d.Toelichting)
 }
 
 function mouseoutScatter(d) {
-  var name = d.key
-  gg2 = d3.selectAll("path.mouseover")
-      .filter(function (d) { console.log(d.properties.name.valueOf()); console.log(name.valueOf()); return d.properties.name.valueOf() === name.valueOf(); })
-      .attr("class", "clickedFill")
-  if (gg2._groups[0].length > 0) {
-      d3.select(this).attr("class", "scatterplotelement")
-  }
+    mouseoutAll(d.Toelichting)
 }
 
 // Update the line graph according to selected map variables.
 function drawScatter() {
-  setTextScatter();
+    setTextScatter();
 
-  // reset lines
-  svg2.selectAll(".scatterplotelement").remove()
-
-
-  svg2.selectAll(".scatterplotelement")
-      .data(data_glob)
-      .enter()
-      .filter(function(d){return selectedToPlot.includes(d.Toelichting) && date.getFullYear() == d.Perioden})
+    svg2.selectAll(".scatterplotelement")
+        .data(data_glob)
+        .enter()
         .append("circle")
-        .attr("cx", function (d) { return x2(d[xData2]); } )
-        .attr("cy", function (d) { return y2(d[yData]); } )
-        .attr("r", 4)
-        .style("fill", function (d) { return colorGraph(d.Toelichting) })
+        .on('mouseover', mouseoverScatter)
+        .on('mouseout', mouseoutScatter)
         .attr("class", "scatterplotelement")
+        // .style("fill", function (d) { return colorGraph(d.Toelichting) })
+        .style("fill","none")
+        .transition(t2)
+        .attr("cx", function (d) { return x2(d[xData2]); })
+        .attr("cy", function (d) { return y2(d[yData]); })
+        .attr("r", baseRadius)
 
+    //shortcut to setting point correctly while maintaining listeners
+    updateScatter()
 }
 
 function updateScatter() {
-  setTextScatter();
+    setTextScatter();
 
-  // redraw the lines with new data
-  svg2.selectAll(".scatterplotelement").remove();
-  
-  svg2.selectAll(".scatterplotelement")
-    .data(data_glob)
-    .enter()
-    .filter(function(d){return selectedToPlot.includes(d.Toelichting) && date.getFullYear() == d.Perioden})
-    // .transition(t2)
-      .append("circle")
-      .attr("cx", function (d) { return x2(d[xData2]); } )
-      .attr("cy", function (d) { return y2(d[yData]); } )
-      .attr("r", 4)
-      .style("fill", function (d) { return colorGraph(d.Toelichting) })
-      .attr("class", "scatterplotelement")
+    // reset the fill of the lines
+    svg2.selectAll(".scatterplotelement")
+        .style("fill", "none")
 
+    // redraw the lines with new data  
+    console.log(date.getFullYear())
+    svg2.selectAll(".scatterplotelement")
+        .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && date.getFullYear() == d.Perioden) })
+        .style("fill", function (d) { return colorGraph(d.Toelichting)})
+        .attr("class", "scatterplotelement")
+
+    // to make the non-selected/ non-shown move already as well!
+    svg2.selectAll(".scatterplotelement")
+        .transition(t2)
+        .attr("cx", function (d) { return x2(d[xData2]); })
+        .attr("cy", function (d) { return y2(d[yData]); })
 }
 
 
 // Update the scatter graph according to selected values.
 function redrawScatterGraph() {
-  rescaleScatterAxis();
-  updateScatter();
+    rescaleScatterAxis();
+    updateScatter();
 }
 
 function setScatterTime(date2) {
-  date = date2;
-  updateScatter();
+    date = date2;
+    updateScatter();
 }

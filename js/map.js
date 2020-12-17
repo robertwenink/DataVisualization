@@ -65,23 +65,10 @@ var overlayText = function (d, g) {
         });
 }
 
-var highlightGraphLine = function (d) {
-    // highlight the corresponding line in the lineGraph!
-    var name = d.properties.name
-    d3.selectAll("path.lineplotelement")
-        .filter(function (d) { return d.key.valueOf() === name.valueOf(); })
-        .attr("class", "lineplotelement selected")
-    d3.selectAll("path.scatterplotelement")
-        .filter(function (d) { return d.key.valueOf() === name.valueOf(); })
-        .attr("class", "scatterplotelement selected")
-
-}
-
 // mouseover event handler
 var mouseover = function (d) {
-    // change the display of provinces on mouseover
-    d3.select(this)
-        .attr("class", "mouseover")
+
+    mouseoverAll(d.properties.name)
 
     // if not displayed allready otherwise, display a text
     if (!selectedProvinceName.includes(d.properties.name)) {
@@ -91,27 +78,11 @@ var mouseover = function (d) {
 
         overlayText(d, g);
     }
-    else {
-        highlightGraphLine(d);
-    }
 }
 
 // mouseout event handler, counterpart of mouseover
 var mouseout = function (d) {
-    d3.selectAll(".mouseOverText").remove()
-    d3.selectAll(".selected")
-        .attr("class", "lineplotelement")
-    d3.selectAll(".selected")
-        .attr("class", "scatterplotelement")
-
-    if (!selectedProvinceName.includes(d.properties.name)) {
-        d3.select(this)
-            .attr('class', '')
-    }
-    else {
-        d3.select(this)
-            .attr('class', 'clickedFill')
-    }
+    mouseoutAll(d.properties.name)
 }
 
 // clicked province event handler
@@ -129,9 +100,9 @@ var clickThis = function (d) {
 
         // provide a clicked fill and notice we still have mouseover
         d3.select(this)
-            .attr("class", "mouseover clickedFill")
-            
-        highlightGraphLine(d);
+            .attr("class", "mouseover")
+
+        mouseoverAll(d.properties.name);
 
         // provide province name with rectangle behind it for readability
         g = d3.select(this.parentNode).append('g')

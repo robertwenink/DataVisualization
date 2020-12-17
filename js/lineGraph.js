@@ -85,7 +85,7 @@ function rescaleAxis() {
 
     data = data_glob;
     y = d3.scaleLinear()
-        .domain([0, d3.max(data, function (d) { return +d[yData]; })])
+        .domain([Math.min(d3.min(data, function (d) { return +d[yData]; }),0), d3.max(data, function (d) { return +d[yData]; })])
         .range([height, 0]);
 
     x = d3.scaleLinear()
@@ -120,32 +120,16 @@ function setText() {
 }
 
 function mouseoverGraph(d) {
-    var name = d.key
-    gg = d3.selectAll("path.clickedFill")
-        .filter(function (d) { console.log(d.properties.name.valueOf() === name.valueOf()); return d.properties.name.valueOf() === name.valueOf(); })
-        .attr("class", "mouseover")
-    console.log(gg)
-    if (gg._groups[0].length > 0) {
-        d3.select(this).attr("class", "selected")
-    }
+    mouseoverAll(d.key)
 }
 
 function mouseoutGraph(d) {
-    var name = d.key
-    gg = d3.selectAll("path.mouseover")
-        .filter(function (d) { console.log(d.properties.name.valueOf()); console.log(name.valueOf()); return d.properties.name.valueOf() === name.valueOf(); })
-        .attr("class", "clickedFill")
-    if (gg._groups[0].length > 0) {
-        d3.select(this).attr("class", "lineplotelement")
-    }
+    mouseoutAll(d.key)
 }
 
 // Update the line graph according to selected map variables.
 function drawGraph() {
     setText();
-
-    // reset lines
-    d3.selectAll(".lineplotelement").remove()
 
     // Draw ALL the lines now to enable transition later
     svg.selectAll(".lineplotelement")
@@ -153,7 +137,6 @@ function drawGraph() {
         .enter()
         .append("path")
         .attr("class", "lineplotelement")
-        .filter(function(d){return selectedToPlot.includes(d.key)})
         .attr("stroke", function (d) { return colorGraph(d.key) })
         .on('mouseover', mouseoverGraph)
         .on("mouseout", mouseoutGraph)
@@ -164,6 +147,9 @@ function drawGraph() {
                 .y(function (d) { return y(d[yData]); })
                 (d.values)
         })
+        
+        // shortcut to setting the graph correctly
+        updateGraph()
 }
 
 function updateGraph() {

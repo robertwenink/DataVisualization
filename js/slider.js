@@ -4,8 +4,8 @@ var marginSlider = { top: 10, right: 18, bottom: 15, left:18};
 var sliderTrackWidth = 360 - marginSlider.left - marginSlider.right;
 var sliderTrackHeight = 100 - marginSlider.top - marginSlider.bottom;
 
-var startDate = new Date(1996, 1);
-var endDate = new Date(2019, 1);
+var startDate = new Date(1995, 1);
+var endDate = new Date(2020, 1);
 
 var date = endDate;
 
@@ -13,7 +13,6 @@ var formatDateIntoYear = d3.timeFormat("%Y");
 var formatDate = d3.timeFormat("%Y");
 
 var sliderSVG = d3.select("#slider")
-
     .append("svg")
     .attr("width", sliderTrackWidth + marginSlider.left + marginSlider.right)
     .attr("height", sliderTrackHeight);
@@ -40,7 +39,7 @@ slider.insert("g", ".track-overlay")
     .attr("class", "ticks")
     .attr("transform", "translate(0," + 18 + ")")
     .selectAll("text")
-    .data(x_s.ticks(15))
+    .data(x_s.ticks())
     .enter()
     .append("text")
     .attr("x", x_s)
@@ -48,7 +47,7 @@ slider.insert("g", ".track-overlay")
     .attr("text-anchor", "middle")
     .text(function(d) {
         return formatDateIntoYear(d);
-    });
+    })
 
 var selected = 1;
 

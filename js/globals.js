@@ -6,17 +6,17 @@ var sumstat;
 var data_glob;
 
 var colorGraph, colorMap;
-var dataKeyHelperArray = ["Nederland","Groningen","Friesland","Drenthe","Overijssel","Flevoland","Gelderland","Utrecht","Noord-Holland","Zuid-Holland","Zeeland","Noord-Brabant","Limburg"];
+var dataKeyHelperArray = ["Nederland", "Groningen", "Friesland", "Drenthe", "Overijssel", "Flevoland", "Gelderland", "Utrecht", "Noord-Holland", "Zuid-Holland", "Zeeland", "Noord-Brabant", "Limburg"];
 
 // Initialize selected axis and years used in both graphs.
 var selectedProvince = [];
 var selectedProvinceName = []; // this one is generally used
-var selectedToPlot = []; 
+var selectedToPlot = [];
 
 // to add "Nederland" if we always want to show the country average irrespective of selection
 var showAverageNL = true;
 if (showAverageNL) {
-    var selectedToPlot = [dataKeyHelperArray[0]]; 
+    var selectedToPlot = [dataKeyHelperArray[0]];
 }
 
 // initial names of the x and y Data to display
@@ -26,31 +26,31 @@ var xData2 = "Price Index";
 
 function returnValuesOfPath(d) {
     v = sumstat[dataKeyHelperArray.indexOf(d.properties.name)].values;
-    return v[v.length-1][yData]; // de index hier kan afhankelijk worden gemaakt van jaargetal!!
+    return v[v.length - 1][yData]; // de index hier kan eventueel afhankelijk worden gemaakt van jaargetal
 }
 
 function setColorPalettes() {
     // this palette is dependent on the categorical data i.e. the province names
-    res = sumstat.map(function (d) { return d.key }) 
+    res = sumstat.map(function (d) { return d.key })
     colorGraph = d3.scaleOrdinal()
         .domain(res)
-        .range(d3.schemeSet3);
+        .range(d3.schemePaired);
 
     // create color Pallete for use in the map dependent on data values
     colorMap = d3.scaleSequential()
-        .domain(d3.extent(data_glob, function (d) { if(!d.RegioS.includes("NL")){return +d[yData];} }))
+        .domain(d3.extent(data_glob, function (d) { if (!d.RegioS.includes("NL")) { return +d[yData]; } }))
 
         // viable options part of same scheme: Magma, Viridis, Plasma, Inferno, Cividis
         .interpolator(d3.interpolateCividis);
 
     // add color to the map here, when we are sure of loaded data
     mapLayer.selectAll("path")
-        .attr("fill", function (d) { return colorMap(returnValuesOfPath(d))});
+        .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
 }
 
 // Change the axis that is selected.
 function changeSelectedProvince(newSelectedProvince, newName) {
-    if (!selectedProvinceName.includes(newName)){
+    if (!selectedProvinceName.includes(newName)) {
         selectedProvince.push(newSelectedProvince);
         selectedProvinceName.push(newName)
     } else {
@@ -67,6 +67,45 @@ function changeSelectedProvince(newSelectedProvince, newName) {
     redrawScatterGraph();
 }
 
+// to provide linked mouseover functionality, notice that 
+function mouseoverAll(RegionName) {
+    // only the geo path has data structured with d.properties so use that to discern type
+    d3.selectAll('path')
+        .filter(function(d){try { return d.properties.name.valueOf() === RegionName}catch{return 0}})
+        .attr("class","mouseover")
+
+    // highlight lineplot elements
+    d3.selectAll("path.lineplotelement")
+        .filter(function (d) { return d.key === RegionName; })
+        .attr("class", "lineplotelement selectedElement")
+
+    // highlight scatterplot elements
+    fill = d3.rgb(colorGraph(RegionName))
+    d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill,';"]'))
+        .attr("r", baseRadius*2)
+}
+
+// to provide linked mouseout functionality
+function mouseoutAll(RegionName) {
+    d3.selectAll(".mouseOverText").remove()
+
+    // only the geo path has data structured with d.properties so use that to discern type
+    d3.selectAll('path')
+    .filter(function(d){try { return d.properties.name.valueOf() === RegionName}catch{return 0}})
+    .attr("class","")
+    
+    // reset lineplot element
+    d3.selectAll(".selectedElement")
+        .filter(".lineplotelement")
+        .attr("class", "lineplotelement")
+
+    // reset scatterplot element
+    fill = d3.rgb(colorGraph(RegionName))
+    d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill,';"]'))
+        .attr("r", baseRadius)
+}
+
+// initialise the data and all components!
 function loadData() {
     d3.csv('datasets/dataset.csv', function (data) {
         data_glob = data
