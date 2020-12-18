@@ -7,7 +7,8 @@ var x2, y2, points;
 var t2 = d3.transition()
     .duration(500)
 
-var baseRadius = 4;
+var startRadius = 2.5;
+var endRadius = 6;
 
 var dateUpper = endDate;
 var dateLower = startDate;
@@ -153,7 +154,7 @@ function drawScatter() {
         .transition(t2)
         .attr("cx", function (d) { return x2(d[xData2]); })
         .attr("cy", function (d) { return y2(d[yData]); })
-        .attr("r", baseRadius)
+        .attr("r", function (d) { return startRadius + (endRadius-startRadius)*((d.Perioden-dateLower.getFullYear())/(dateUpper.getFullYear()-dateLower.getFullYear()))})
 
     //shortcut to setting point correctly while maintaining listeners
     updateScatter()
@@ -170,7 +171,8 @@ function updateScatter() {
     svg2.selectAll(".scatterplotelement")
         .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && d.Perioden >= dateLower.getFullYear() && d.Perioden <= dateUpper.getFullYear() && d.Perioden%1==0) })
         .style("fill", function (d) { return colorGraph(d.Toelichting) })
-        .attr("fill-opacity", function (d) {return (0.5+1*((d.Perioden-dateLower.getFullYear())/(dateUpper.getFullYear()-dateLower.getFullYear()))**2)})
+        .attr("r", function (d) {return startRadius + (endRadius-startRadius)*((d.Perioden-dateLower.getFullYear())/(dateUpper.getFullYear()-dateLower.getFullYear()))})
+        //.attr("fill-opacity", function (d) {return (0.5+0.5*((d.Perioden-dateLower.getFullYear())/(dateUpper.getFullYear()-dateLower.getFullYear()))**2)})
         .attr("class", "scatterplotelement")
 
     // to make the non-selected/ non-shown move already as well! looks better for the scatterplot
