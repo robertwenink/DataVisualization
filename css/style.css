@@ -13,7 +13,7 @@ h1 {
 } 
 
 h2 {
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
     margin-top: 1rem;
 }
 
@@ -26,6 +26,11 @@ h3 {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+}
+
+.instructions {
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .list {

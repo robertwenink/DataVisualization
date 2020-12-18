@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
-var margin = { top: 10, right: 60, bottom: 40, left: 70 },
+var margin = { top: 20, right: 60, bottom: 40, left: 70 },
     width = 450 - margin.left - margin.right,
-    height = 310 - margin.top - margin.bottom;
+    height = 350 - margin.top - margin.bottom;
 
 var x, y;
 var t = d3.transition()

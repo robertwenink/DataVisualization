@@ -9,7 +9,6 @@ var colorGraph, colorGraphSub, colorMap;
 var dataKeyHelperArray = ["Nederland", "Groningen", "Friesland", "Drenthe", "Overijssel", "Flevoland", "Gelderland", "Utrecht", "Noord-Holland", "Zuid-Holland", "Zeeland", "Noord-Brabant", "Limburg"];
 
 // Initialize selected axis and years used in both graphs.
-var selectedProvince = [];
 var selectedProvinceName = []; // this one is generally used
 var selectedToPlot = [];
 
@@ -30,8 +29,8 @@ function returnValuesOfPath(d) {
     return v[v.length - 1][yData]; // de index hier kan eventueel afhankelijk worden gemaakt van jaargetal
 }
 
-function getUnitsFullText(textdata){
-    if (textdata == "Average Price" || textdata == "Total Value Sold"){
+function getUnitsFullText(textdata) {
+    if (textdata == "Average Price" || textdata == "Total Value Sold") {
         textdata = textdata.concat(" [€]")
     }
     return textdata
@@ -58,7 +57,7 @@ function setColorPalettes() {
 
 function colorGraph(name) {
     // if and else statement to exclude the NL data from the categorical data of only size 12.
-    if (name == "Nederland" || name.includes("NL")){
+    if (name == "Nederland" || name.includes("NL")) {
         return d3.rgb("ffffff")
     }
     else {
@@ -67,12 +66,16 @@ function colorGraph(name) {
 }
 
 // Change the axis that is selected.
-function changeSelectedProvince(newSelectedProvince, newName) {
-    if (!selectedProvinceName.includes(newName)) {
-        selectedProvince.push(newSelectedProvince);
+function changeSelectedProvince(newName) {
+    if (!selectedProvinceName.includes(newName) && newName != null) {
         selectedProvinceName.push(newName)
-    } else {
-        selectedProvince = [];
+    } else if (selectedProvinceName.includes(newName)) {
+        const index = selectedProvinceName.indexOf(newName);
+        if (index > -1) {
+            selectedProvinceName.splice(index, 1);
+        }
+    }
+    else { // this is the rightbuttonclick case
         selectedProvinceName = [];
     }
     //changePlot(selectedProvince)

@@ -39,6 +39,20 @@ svg.append('defs')
 var mapLayer = svg.append('g')
     .classed('map-layer', true);
 
+mapLayer.append("text")
+    .text("Left click to select/deselect individually")
+    .attr('x', '20')
+    .attr('y', '20')
+    .attr('id','leftclickinstructions')
+    .attr('class','instructions')
+
+mapLayer.append("text")
+    .text("Right click to select/deselect all at once")
+    .attr('x', '20')
+    .attr('y', '45')
+    .attr('id','rightclickinstructions')
+    .attr('class','instructions')
+
 // function that overlays text over a province on mouseover and mouseclick
 var overlayText = function (d, g) {
     rect = g.append('rect')
@@ -85,12 +99,53 @@ var mouseout = function (d) {
     mouseoutAll(d.properties.name)
 }
 
+var removeAll = function () {
+    changeSelectedProvince(null)
+    d3.selectAll(".clickedText").remove()
+    d3.selectAll("path#diagonalHatch").remove()
+
+    mapLayer.selectAll("path")
+        .attr('class', '')
+        .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
+}
+
+var rightclick = function (d) {
+    d3.select("#rightclickinstructions").remove()
+    d3.select("#leftclickinstructions").remove()
+    if (!selectedProvinceName.includes(d.properties.name)) {
+        removeAll()
+
+        d3.select("#mapContainer")
+            .selectAll("path")
+            .each(function () {
+                // use try function as there are non-map paths present without the data
+                try {
+                    changeSelectedProvince(d3.select(this).data()[0].properties.name)
+                    g = d3.select(this.parentNode).append('g')
+                        .attr("class", "clickedText")
+                    overlayText(d3.select(this).data()[0], g);
+                } catch { return 0 }
+            })
+            .clone(true)
+            .attr("fill", "URL(#diagonalHatch)")
+            .attr("id", "diagonalHatch")
+            .attr('class', '')
+
+    } else {
+        removeAll()
+    }
+    // we just clicked, so mouse is still hovering!
+    mouseover.call(this, d)
+}
+
 // clicked province event handler
 var clickThis = function (d) {
+    d3.select("#rightclickinstructions").remove()
+    d3.select("#leftclickinstructions").remove()
     if (!selectedProvinceName.includes(d.properties.name)) {
         // reset the view
         d3.selectAll(".mouseOverText").remove()
-        changeSelectedProvince(d, d.properties.name)
+        changeSelectedProvince(d.properties.name)
 
         // create a path clone for the striped overlay
         d3.select(this).clone(true)
@@ -112,11 +167,18 @@ var clickThis = function (d) {
 
     } else {
         // in case the province clicker already was the selected province, we want to deselect it
-        changeSelectedProvince(null, d.properties.name)
-        d3.selectAll(".clickedText").remove()
-        d3.selectAll("path#diagonalHatch").remove()
+        RegionName = d.properties.name
+        changeSelectedProvince(RegionName)
+        d3.selectAll(".clickedText")
+            .filter(function () { return this.innerHTML.includes(RegionName) })
+            .remove()
+
+        d3.selectAll("path#diagonalHatch")
+            .filter(function (d) { try { return d.properties.name.valueOf() === RegionName } catch { return 0 } })
+            .remove()
 
         mapLayer.selectAll("path")
+            .filter(function (d) { try { return d.properties.name.valueOf() === RegionName } catch { return 0 } })
             .attr('class', '')
             .attr("fill", function (d) { return colorMap(returnValuesOfPath(d)) });
 
@@ -152,6 +214,7 @@ d3.json('datasets/provinces_without_water.geojson', function (error, mapData) {
         .attr('vector-effect', 'non-scaling-stroke')
         .on('mouseover', mouseover)
         .on("mouseout", mouseout)
+        .on("contextmenu", rightclick)
         .on("click", clickThis)
 });
 

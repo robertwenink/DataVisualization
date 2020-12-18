@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
 var margin2 = { top: 10, right: 60, bottom: 50, left: 70 },
     width2 = 450 - margin2.left - margin2.right,
-    height2 = 320 - margin2.top - margin2.bottom;
+    height2 = 350 - margin2.top - margin2.bottom;
 
 var x2, y2, points;
 var t2 = d3.transition()
@@ -170,7 +170,7 @@ function updateScatter() {
     svg2.selectAll(".scatterplotelement")
         .filter(function (d) { return (selectedToPlot.includes(d.Toelichting) && d.Perioden >= dateLower.getFullYear() && d.Perioden <= dateUpper.getFullYear() && d.Perioden%1==0) })
         .style("fill", function (d) { return colorGraph(d.Toelichting) })
-        .style("fill-opacity", function (d) {return (0.2+0.8*((d.Perioden-dateLower.getFullYear())/(dateUpper.getFullYear()-dateLower.getFullYear()))**3)})
+        .attr("fill-opacity", function (d) {return (0.5+1*((d.Perioden-dateLower.getFullYear())/(dateUpper.getFullYear()-dateLower.getFullYear()))**2)})
         .attr("class", "scatterplotelement")
 
     // to make the non-selected/ non-shown move already as well! looks better for the scatterplot

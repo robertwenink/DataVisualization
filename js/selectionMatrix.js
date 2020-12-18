@@ -1,8 +1,8 @@
 // file for the selection matrix
 
-var marginSM = { top: 10, right: 5, bottom: 40, left: 25 },
+var marginSM = { top: 20, right: 5, bottom: 40, left: 25 },
     widthSM = 360 - marginSM.left - marginSM.right,
-    heightSM = 360 - marginSM.top - marginSM.bottom;
+    heightSM = 370 - marginSM.top - marginSM.bottom;
 
 // make a list of the data column names we want to assess, easy hardcoded solution for now
 XindexList2 = ["Housing Stock", "Stock Increase", "Price Index [-]", "Houses Sold [%]", "Average Price", "Total Value Sold"];
@@ -68,6 +68,11 @@ function buildSelectionMatrix() {
     h2 = (heightSM - ((nr + 1) * spacing)) / nr
     w = Math.min(w2, h2)
     h = Math.min(w2, h2)
+
+    svgM.append("text")
+    .attr("class",'instructions')
+    .text("Click to select x-data to correlate y-data with")
+    .attr("y",-8)
 
     XindexList2.forEach(function (xData2, ix) {
         var x = w * (ix) + (ix + 1) * spacing

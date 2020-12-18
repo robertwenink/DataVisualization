@@ -61,26 +61,33 @@ function fillDataSelectionMatrixTime(xData, yData) {
 function buildSelectionMatrixTime() {
     // spacing variable
     spacing = 5;
-    nr = Math.max(Xindex.length,YindexList.length);
+    nr = Math.max(Xindex.length, YindexList.length);
     w2 = (width) / nr
     h2 = (height) / nr
-    w = Math.min(w2,h2)
-    h = Math.min(w2,h2)
+    w = Math.min(w2, h2)
+    h = Math.min(w2, h2)
+
+    svgMT.append("text")
+        .attr("class", 'instructions')
+        .text("Click to select y-data")
+        .attr("y", -8)
+        .attr('x',width/2-18)
+        .attr('text-anchor','middle')
 
     Xindex.forEach(function (xData, ix) {
         YindexList.forEach(function (yData, iy) {
             var datum = { "xData": xData, "yData": yData }
-            var x = w * (ix) + (ix + 1) * spacing + width/2
+            var x = w * (ix) + (ix + 1) * spacing + width / 2
             var y = h * (iy) + (iy) * spacing
 
             // Add encapsulating background
             svgMT.append('rect')
                 .attr("width", w + 2 * spacing)
                 .attr("height", h + 2 * spacing)
-                .attr('x', x - 1*spacing)
-                .attr('y', y - 1*spacing)
+                .attr('x', x - 1 * spacing)
+                .attr('y', y - 1 * spacing)
                 .attr("fill", "#aaa")
-            
+
             // add graph background
             svgMT.append("rect")
                 .datum(datum)
@@ -94,11 +101,11 @@ function buildSelectionMatrixTime() {
             // Add data label text
             svgMT.append("text")
                 .text(getUnitsFullText(yData))
-                .attr('x', x - 3*spacing)
-                .attr('y', y+h/2 + 6)
+                .attr('x', x - 3 * spacing)
+                .attr('y', y + h / 2 + 6)
                 .style("font-size", "12px")
                 .style("text-anchor", "end")
-            
+
             // append the graph svg
             svg_rect = svgMT.append("svg")
                 .attr("width", w)
