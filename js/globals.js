@@ -103,7 +103,7 @@ function mouseoverAll(RegionName) {
     // highlight scatterplot elements
     fill = d3.rgb(colorGraph(RegionName))
     d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill, ';"]'))
-        .attr("r", baseRadius * 2)
+        .attr("r", function(d) {return d3.select(this).attr("r")*1.5})
 }
 
 // to provide linked mouseout functionality
@@ -123,7 +123,7 @@ function mouseoutAll(RegionName) {
     // reset scatterplot element
     fill = d3.rgb(colorGraph(RegionName))
     d3.selectAll('circle.scatterplotelement[style="fill: '.concat(fill, ';"]'))
-        .attr("r", baseRadius)
+        .attr("r", function(d) {return d3.select(this).attr("r")/1.5})
 }
 
 // initialise the data and all components!
